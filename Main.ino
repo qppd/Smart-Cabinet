@@ -14,6 +14,7 @@
 #include "components/TB6600.h"
 #include "components/Relay4.h"
 #include "components/LimitSwitch.h"
+#include "components/ReedSwitch.h"
 
 // Centralized pin assignments
 #include "pins.h"
@@ -31,6 +32,9 @@ Relay4 relays(RELAY1_PIN, RELAY2_PIN, RELAY3_PIN, RELAY4_PIN, false); // activeL
 // Limit switches
 LimitSwitch limitMin(LIMIT_MIN_PIN, true);
 LimitSwitch limitMax(LIMIT_MAX_PIN, true);
+
+// Reed switch
+ReedSwitch reedSwitch(REED_SWITCH_PIN);
 
 // Emergency flags set by ISRs
 volatile bool emergencyMin = false;
@@ -107,6 +111,9 @@ void setup() {
     }
   });
 
+  // Initialize reed switch
+  reedSwitch.begin();
+
   // Attach hardware interrupts for emergency stop (falling edge for activeLow)
   attachInterrupt(digitalPinToInterrupt(LIMIT_MIN_PIN), isrLimitMin, FALLING);
   attachInterrupt(digitalPinToInterrupt(LIMIT_MAX_PIN), isrLimitMax, FALLING);
@@ -123,6 +130,13 @@ void loop() {
   finger.update();
   limitMin.update();
   limitMax.update();
+
+  // Check reed switch state
+  if (reedSwitch.isClosed()) {
+    Serial.println("Door is closed");
+  } else {
+    Serial.println("Door is open");
+  }
 
   // Handle emergency flags in main loop (non-ISR safe actions here)
   if (emergencyMin) {
