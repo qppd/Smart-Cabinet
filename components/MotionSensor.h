@@ -20,12 +20,12 @@ public:
   bool readRaw();
 
   // Debounced motion state
-  bool isMotion() const { return _state; }
+  bool isMotion() const;
 
   // Set a simple callback that will be called when state changes.
   // Callback signature: void callback(bool newState)
   using Callback = void(*)(bool);
-  void setCallback(Callback cb) { _cb = cb; }
+  void setCallback(Callback cb);
 
 private:
   uint8_t _pin;
@@ -35,34 +35,7 @@ private:
   Callback _cb;
 };
 
-// Inline implementations
-inline MotionSensor::MotionSensor(uint8_t pin, unsigned long debounceMs)
-  : _pin(pin), _state(false), _lastChange(0), _debounceMs(debounceMs), _cb(nullptr) {}
-
-inline void MotionSensor::begin() {
-  pinMode(_pin, INPUT);
-  _state = digitalRead(_pin);
-  _lastChange = millis();
-}
-
-inline bool MotionSensor::readRaw() {
-  return digitalRead(_pin);
-}
-
-inline void MotionSensor::update() {
-  bool raw = readRaw();
-  unsigned long now = millis();
-  if (raw != _state) {
-    // potential change, check debounce
-    if (now - _lastChange >= _debounceMs) {
-      _state = raw;
-      _lastChange = now;
-      if (_cb) _cb(_state);
-    }
-  } else {
-    _lastChange = now;
-  }
-}
+// Implementations moved to MotionSensor.cpp
 
 #endif // COMPONENTS_MOTION_SENSOR_H
 

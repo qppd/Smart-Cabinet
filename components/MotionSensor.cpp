@@ -1,28 +1,38 @@
 #include "MotionSensor.h"
 
-MotionSensor::MotionSensor()
-  : _pin(255), _activeHigh(true), _state(false), _lastChange(0) {}
+// Definitions for MotionSensor declared in MotionSensor.h
 
-void MotionSensor::begin(uint8_t pin, bool activeHigh) {
-  _pin = pin;
-  _activeHigh = activeHigh;
+MotionSensor::MotionSensor(uint8_t pin, unsigned long debounceMs)
+  : _pin(pin), _state(false), _lastChange(0), _debounceMs(debounceMs), _cb(nullptr) {}
+
+void MotionSensor::begin() {
   pinMode(_pin, INPUT);
-  _state = false;
+  _state = digitalRead(_pin);
   _lastChange = millis();
 }
 
-bool MotionSensor::isMotion() {
-  // return last known state
+bool MotionSensor::isMotion() const {
   return _state;
 }
 
+bool MotionSensor::readRaw() {
+  return digitalRead(_pin);
+}
+
+void MotionSensor::setCallback(Callback cb) {
+  _cb = cb;
+}
+
 void MotionSensor::update() {
-  if (_pin == 255) return;
-  bool raw = digitalRead(_pin) == HIGH;
-  bool active = _activeHigh ? raw : !raw;
+  bool raw = readRaw();
   unsigned long now = millis();
-  if (active != _state && (now - _lastChange) > _debounceMs) {
-    _state = active;
+  if (raw != _state) {
+    if (now - _lastChange >= _debounceMs) {
+      _state = raw;
+      _lastChange = now;
+      if (_cb) _cb(_state);
+    }
+  } else {
     _lastChange = now;
   }
 }
