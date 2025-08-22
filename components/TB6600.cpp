@@ -32,3 +32,46 @@ void TB6600::stepMany(unsigned long steps, unsigned int pulseUs, unsigned int ga
     if (gapUs) delayMicroseconds(gapUs);
   }
 }
+
+bool TB6600::startSteps(unsigned long steps, unsigned int pulseUs, unsigned int gapUs) {
+  if (steps == 0 || _busy) return false;
+  _remainingSteps = steps;
+  _pulseUs = pulseUs;
+  _gapUs = gapUs;
+  _pulseState = false;
+  _nextToggleMicros = micros();
+  _busy = true;
+  return true;
+}
+
+void TB6600::update() {
+  if (!_busy) return;
+  unsigned long now = micros();
+  if (!_pulseState) {
+    // wait for gap then start pulse
+    if ((long)(now - _nextToggleMicros) >= 0) {
+      digitalWrite(_stepPin, HIGH);
+      _pulseState = true;
+      _nextToggleMicros = now + _pulseUs;
+    }
+  } else {
+    if ((long)(now - _nextToggleMicros) >= 0) {
+      digitalWrite(_stepPin, LOW);
+      _pulseState = false;
+      if (_remainingSteps > 0) --_remainingSteps;
+      if (_remainingSteps == 0) {
+        _busy = false;
+      } else {
+        _nextToggleMicros = now + _gapUs;
+      }
+    }
+  }
+}
+
+void TB6600::emergencyStop() {
+  // disable driver immediately
+  if (_enablePin != 255) digitalWrite(_enablePin, HIGH); // assume HIGH disables
+  // cancel any ongoing non-blocking operation
+  _busy = false;
+  _remainingSteps = 0;
+}

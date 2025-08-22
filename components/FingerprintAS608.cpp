@@ -6,6 +6,8 @@ FingerprintAS608::FingerprintAS608(HardwareSerial &serial, uint32_t baud)
 void FingerprintAS608::begin() {
   _serial.begin(_baud);
   delay(100);
+  _state = IDLE;
+  _searchCb = nullptr;
 }
 
 bool FingerprintAS608::verifySensor() {
@@ -43,4 +45,32 @@ int FingerprintAS608::search() {
   if (res == FINGERPRINT_OK) return _finger.fingerID;
   if (res == FINGERPRINT_NOTFOUND) return 0;
   return -1;
+}
+
+bool FingerprintAS608::startSearch(SearchCallback cb) {
+  if (_state != IDLE) return false;
+  _searchCb = cb;
+  _state = SEARCHING;
+  return true;
+}
+
+void FingerprintAS608::update() {
+  if (_state == IDLE) return;
+  // Try to get image; return if not ready yet
+  int p = _finger.getImage();
+  if (p != FINGERPRINT_OK) return; // still waiting
+  if (_finger.image2Tz() != FINGERPRINT_OK) {
+    if (_searchCb) _searchCb(-1);
+    _state = IDLE;
+    return;
+  }
+  int res = _finger.fingerSearch();
+  if (res == FINGERPRINT_OK) {
+    if (_searchCb) _searchCb(_finger.fingerID);
+  } else if (res == FINGERPRINT_NOTFOUND) {
+    if (_searchCb) _searchCb(0);
+  } else {
+    if (_searchCb) _searchCb(-1);
+  }
+  _state = IDLE;
 }

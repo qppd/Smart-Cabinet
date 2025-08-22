@@ -16,9 +16,27 @@ public:
   void stepMany(unsigned long steps, unsigned int pulseUs = 100, unsigned int gapUs = 800);
   void setDirection(bool dir);
 
+  // Immediate emergency stop: disable driver and cancel any ongoing non-blocking steps
+  void emergencyStop();
+
+  // Non-blocking API
+  // Start a non-blocking stepping operation. Returns true if started.
+  bool startSteps(unsigned long steps, unsigned int pulseUs = 100, unsigned int gapUs = 800);
+  // Call frequently from loop to drive the steps
+  void update();
+  // true while non-blocking stepping is in progress
+  bool isBusy() const { return _busy; }
+
 private:
   uint8_t _dirPin, _stepPin, _enablePin;
   bool _dir;
+  // non-blocking state
+  volatile unsigned long _remainingSteps;
+  unsigned int _pulseUs;
+  unsigned int _gapUs;
+  unsigned long _nextToggleMicros;
+  bool _pulseState;
+  bool _busy;
 };
 
 #endif // COMPONENTS_TB6600_H

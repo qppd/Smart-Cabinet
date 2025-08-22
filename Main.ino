@@ -13,26 +13,42 @@
 #include "components/FingerprintAS608.h"
 #include "components/TB6600.h"
 #include "components/Relay4.h"
+#include "components/LimitSwitch.h"
 
-// Default ESP32 pin assignments (change to match your wiring)
-// Motion sensor (PIR) - 3-wire: OUT to GPIO
-const uint8_t PIR_PIN = 34; // input-only pin
+// Centralized pin assignments
+#include "pins.h"
 
-// I2C LCD - SDA / SCL use default Wire pins (GPIO 21 SDA, 22 SCL)
-const uint8_t LCD_ADDR = 0x27;
-
-// Buzzer
-const uint8_t BUZZER_PIN = 25;
-
-// Fingerprint module: use Serial2 (RX2=16, TX2=17) by default
+// Serial for fingerprint module
 HardwareSerial FingerSerial(2);
 
-// TB6600 drivers (example pins)
-TB6600 stepper1(2, 4, 15); // DIR, STEP, ENABLE
-TB6600 stepper2(18, 19, 5);
+// TB6600 drivers
+TB6600 stepper1(TB1_DIR, TB1_STEP, TB1_ENABLE);
+TB6600 stepper2(TB2_DIR, TB2_STEP, TB2_ENABLE);
 
 // 4-channel relay
-Relay4 relays(12, 13, 14, 27, false); // activeLow typical for ESP32 relay boards
+Relay4 relays(RELAY1_PIN, RELAY2_PIN, RELAY3_PIN, RELAY4_PIN, false); // activeLow typical for ESP32 relay boards
+
+// Limit switches
+LimitSwitch limitMin(LIMIT_MIN_PIN, true);
+LimitSwitch limitMax(LIMIT_MAX_PIN, true);
+
+// Emergency flags set by ISRs
+volatile bool emergencyMin = false;
+volatile bool emergencyMax = false;
+
+// ISR handlers (keep them tiny)
+void IRAM_ATTR isrLimitMin() {
+  emergencyMin = true;
+  // immediately disable stepper drivers
+  stepper1.emergencyStop();
+  stepper2.emergencyStop();
+}
+
+void IRAM_ATTR isrLimitMax() {
+  emergencyMax = true;
+  stepper1.emergencyStop();
+  stepper2.emergencyStop();
+}
 
 // Components instances
 MotionSensor pir(PIR_PIN);
@@ -71,6 +87,30 @@ void setup() {
   relays.begin();
   relays.allOff();
 
+  // Limit switches
+  limitMin.begin();
+  limitMax.begin();
+  limitMin.setCallback([](bool pressed){
+    Serial.print("Limit MIN: "); Serial.println(pressed ? "PRESSED" : "RELEASED");
+    if (pressed) {
+      lcd.print(0, 2, "Limit MIN: PRESSED  ");
+    } else {
+      lcd.print(0, 2, "Limit MIN: RELEASED ");
+    }
+  });
+  limitMax.setCallback([](bool pressed){
+    Serial.print("Limit MAX: "); Serial.println(pressed ? "PRESSED" : "RELEASED");
+    if (pressed) {
+      lcd.print(0, 3, "Limit MAX: PRESSED  ");
+    } else {
+      lcd.print(0, 3, "Limit MAX: RELEASED ");
+    }
+  });
+
+  // Attach hardware interrupts for emergency stop (falling edge for activeLow)
+  attachInterrupt(digitalPinToInterrupt(LIMIT_MIN_PIN), isrLimitMin, FALLING);
+  attachInterrupt(digitalPinToInterrupt(LIMIT_MAX_PIN), isrLimitMax, FALLING);
+
   Serial.println("Initialization complete");
 }
 
@@ -78,6 +118,26 @@ void loop() {
   // Non-blocking updates for components
   pir.update();
   buzzer.update();
+  stepper1.update();
+  stepper2.update();
+  finger.update();
+  limitMin.update();
+  limitMax.update();
+
+  // Handle emergency flags in main loop (non-ISR safe actions here)
+  if (emergencyMin) {
+    emergencyMin = false;
+    Serial.println("Emergency stop: MIN limit triggered");
+    lcd.print(0, 2, "EMERGENCY: MIN STOP ");
+    // ensure relays or other actuators are safe
+    relays.allOff();
+  }
+  if (emergencyMax) {
+    emergencyMax = false;
+    Serial.println("Emergency stop: MAX limit triggered");
+    lcd.print(0, 3, "EMERGENCY: MAX STOP ");
+    relays.allOff();
+  }
 
   // Example: display motion state on Serial and LCD (no control logic)
   static bool lastPir = false;
