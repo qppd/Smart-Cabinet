@@ -17,12 +17,15 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 
 ---
 
+
 ## Features
 - **Secure Access**: Fingerprint authentication using the Adafruit AS608 sensor.
 - **Automated Mechanisms**: Stepper motors for opening/closing doors, controlled by TB6600 drivers.
 - **Real-Time Feedback**: I2C LCD for user messages and a buzzer for audible alerts.
 - **Energy Efficiency**: Auto-close functionality with motion detection.
 - **Safety Mechanisms**: Reed switch for door-closed detection and limit switches for motor homing.
+- **WebSocket Communication**: Optional WebSocket client/server for remote monitoring or control.
+- **RTC Clock**: DS1302 real-time clock for time-based features.
 
 ---
 
@@ -35,12 +38,26 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 - **Display**: I2C LCD for user interaction.
 - **Feedback**: Buzzer for alerts.
 
+
 ### Software Components
 - **Main Control**: `Main.ino` orchestrates the system.
-- **Helper Classes**: Modular components for sensors and actuators in the `components/` directory.
+- **Component Classes**: Each hardware module has a dedicated class:
+  - `Buzzer` (Buzzer.h/cpp)
+  - `FingerprintAS608` (FingerprintAS608.h/cpp)
+  - `MotionSensor` (MotionSensor.h/cpp)
+  - `I2CLcd` (I2CLcd.h/cpp)
+  - `DS1302Rtc` (DS1302Rtc.h/cpp)
+  - `Relay4` (Relay4.h/cpp)
+  - `LimitSwitch` (LimitSwitch.h/cpp)
+  - `ReedSwitch` (ReedSwitch.h/cpp)
+  - `TB6600` (TB6600.h/cpp)
+  - `WebSocketClient`/`WebSocketServer` (optional, for network features)
+- **Pin Definitions**: All pin assignments are centralized in `pins.h`.
 - **Libraries**:
   - `LiquidCrystal_I2C`
   - `Adafruit Fingerprint Sensor Library`
+  - `RTClib`
+  - `ArduinoWebsockets` (for WebSocket features)
 
 ---
 
@@ -67,9 +84,13 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 1. Trigger enrollment mode via a button or special fingerprint sequence.
 2. Follow LCD prompts to enroll a new fingerprint.
 
+
 ### Auto-Close
 1. If no motion is detected for 60 seconds, the cabinet closes automatically.
 2. Reed switch confirms the door is fully closed.
+
+### Emergency Stop
+- Limit switches trigger an immediate stop of stepper motors for safety.
 
 ---
 
@@ -81,17 +102,30 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 
 ---
 
+
 ## Troubleshooting
 - **Motor Issues**: Check TB6600 connections and power supply.
 - **Fingerprint Sensor Not Responding**: Verify wiring and test with `verifySensor()`.
 - **Reed Switch Not Triggering**: Ensure proper alignment and wiring.
+- **LCD Not Displaying**: Check I2C address and wiring.
+- **WebSocket Issues**: Ensure network credentials and server/client configuration are correct.
 
 ---
+
 
 ## Files of Interest
 - `Main.ino`: Main control logic.
 - `pins.h`: Pin mappings and constants.
-- `components/`: Modular classes for sensors and actuators.
+- `Buzzer.h/cpp`: Buzzer control class.
+- `FingerprintAS608.h/cpp`: Fingerprint sensor class.
+- `MotionSensor.h/cpp`: PIR motion sensor class.
+- `I2CLcd.h/cpp`: I2C LCD display class.
+- `DS1302Rtc.h/cpp`: Real-time clock class.
+- `Relay4.h/cpp`: 4-channel relay control class.
+- `LimitSwitch.h/cpp`: Limit switch class.
+- `ReedSwitch.h/cpp`: Reed switch class.
+- `TB6600.h/cpp`: Stepper motor driver class.
+- `WebSocketClient.h/cpp`, `WebSocketServer.h/cpp`: WebSocket communication classes (optional).
 
 ---
 
