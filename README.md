@@ -51,7 +51,7 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
   - `LimitSwitch` (LimitSwitch.h/cpp)
   - `ReedSwitch` (ReedSwitch.h/cpp)
   - `TB6600` (TB6600.h/cpp)
-  - `WebSocketClient`/`WebSocketServer` (optional, for network features)
+  - `WebSocketClient`/`WebSocketServer` (for network features)
 - **Pin Definitions**: All pin assignments are centralized in `pins.h`.
 - **Libraries**:
   - `LiquidCrystal_I2C`
@@ -125,7 +125,7 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 - `LimitSwitch.h/cpp`: Limit switch class.
 - `ReedSwitch.h/cpp`: Reed switch class.
 - `TB6600.h/cpp`: Stepper motor driver class.
-- `WebSocketClient.h/cpp`, `WebSocketServer.h/cpp`: WebSocket communication classes (optional).
+- `WebSocketClient.h/cpp`, `WebSocketServer.h/cpp`: WebSocket communication classes.
 
 ---
 
