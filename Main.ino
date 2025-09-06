@@ -1,20 +1,12 @@
-/*
-  Main.ino - Blank template for Smart Cabinet project
-  Created: 2025-08-23
-
-  This file is intentionally minimal. Replace or extend the
-  setup() and loop() functions below with your application code.
-*/
-
-// Include component wrappers
-#include "components/MotionSensor.h"
-#include "components/I2CLcd.h"
-#include "components/Buzzer.h"
-#include "components/FingerprintAS608.h"
-#include "components/TB6600.h"
-#include "components/Relay4.h"
-#include "components/LimitSwitch.h"
-#include "components/ReedSwitch.h"
+#include "MotionSensor.h"
+#include "I2CLcd.h"
+#include "DS1302Rtc.h"
+#include "Buzzer.h"
+#include "FingerprintAS608.h"
+#include "TB6600.h"
+#include "Relay4.h"
+#include "LimitSwitch.h"
+#include "ReedSwitch.h"
 
 // Centralized pin assignments
 #include "pins.h"
@@ -55,10 +47,11 @@ void IRAM_ATTR isrLimitMax() {
 }
 
 // Components instances
-MotionSensor pir(PIR_PIN);
+//MotionSensor pir(PIR_PIN);
 I2CLcd lcd(LCD_ADDR, 20, 4);
-Buzzer buzzer(BUZZER_PIN, 0, 2000);
-FingerprintAS608 finger(FingerSerial, 57600);
+DS1302Rtc rtc;
+//Buzzer buzzer(BUZZER_PIN, 0, 2000);
+//FingerprintAS608 finger(FingerSerial, 57600);
 
 void setup() {
   // initialize once
@@ -66,7 +59,7 @@ void setup() {
   Serial.println("Smart Cabinet components init...");
 
   // Motion sensor
-  pir.begin();
+  //pir.begin();
 
   // I2C LCD
   Wire.begin(); // default SDA=21, SCL=22 on most ESP32 boards
@@ -74,96 +67,67 @@ void setup() {
   lcd.print(0, 0, "Smart Cabinet");
   lcd.print(0, 1, "Init components...");
 
+  // RTC
+  rtc.begin();
+
   // Buzzer
-  buzzer.begin();
-  buzzer.beep(100, 1500);
+  //buzzer.begin();
+  //buzzer.beep(100, 1500);
 
   // Fingerprint serial
-  finger.begin();
-  if (finger.verifySensor()) Serial.println("Fingerprint sensor OK");
-  else Serial.println("Fingerprint sensor NOT found");
+  //finger.begin();
+  //if (finger.verifySensor()) Serial.println("Fingerprint sensor OK");
+  //else Serial.println("Fingerprint sensor NOT found");
 
   // Steppers
-  stepper1.begin();
-  stepper2.begin();
+  //stepper1.begin();
+  //stepper2.begin();
 
   // Relays
-  relays.begin();
-  relays.allOff();
+  //relays.begin();
+  //relays.allOff();
 
   // Limit switches
-  limitMin.begin();
-  limitMax.begin();
-  limitMin.setCallback([](bool pressed){
-    Serial.print("Limit MIN: "); Serial.println(pressed ? "PRESSED" : "RELEASED");
-    if (pressed) {
-      lcd.print(0, 2, "Limit MIN: PRESSED  ");
-    } else {
-      lcd.print(0, 2, "Limit MIN: RELEASED ");
-    }
-  });
-  limitMax.setCallback([](bool pressed){
-    Serial.print("Limit MAX: "); Serial.println(pressed ? "PRESSED" : "RELEASED");
-    if (pressed) {
-      lcd.print(0, 3, "Limit MAX: PRESSED  ");
-    } else {
-      lcd.print(0, 3, "Limit MAX: RELEASED ");
-    }
-  });
+  //limitMin.begin();
+  // limitMax.begin();
+  // limitMin.setCallback([](bool pressed){
+  //   Serial.print("Limit MIN: "); Serial.println(pressed ? "PRESSED" : "RELEASED");
+  //   if (pressed) {
+  //     lcd.print(0, 2, "Limit MIN: PRESSED  ");
+  //   } else {
+  //     lcd.print(0, 2, "Limit MIN: RELEASED ");
+  //   }
+  // });
+  // limitMax.setCallback([](bool pressed){
+  //   Serial.print("Limit MAX: "); Serial.println(pressed ? "PRESSED" : "RELEASED");
+  //   if (pressed) {
+  //     lcd.print(0, 3, "Limit MAX: PRESSED  ");
+  //   } else {
+  //     lcd.print(0, 3, "Limit MAX: RELEASED ");
+  //   }
+  // });
 
   // Initialize reed switch
-  reedSwitch.begin();
+  //reedSwitch.begin()
 
   // Attach hardware interrupts for emergency stop (falling edge for activeLow)
-  attachInterrupt(digitalPinToInterrupt(LIMIT_MIN_PIN), isrLimitMin, FALLING);
-  attachInterrupt(digitalPinToInterrupt(LIMIT_MAX_PIN), isrLimitMax, FALLING);
+  // attachInterrupt(digitalPinToInterrupt(LIMIT_MIN_PIN), isrLimitMin, FALLING);
+  // attachInterrupt(digitalPinToInterrupt(LIMIT_MAX_PIN), isrLimitMax, FALLING);
 
   Serial.println("Initialization complete");
 }
 
 void loop() {
-  // Non-blocking updates for components
-  pir.update();
-  buzzer.update();
-  stepper1.update();
-  stepper2.update();
-  finger.update();
-  limitMin.update();
-  limitMax.update();
-
-  // Check reed switch state
-  if (reedSwitch.isClosed()) {
-    Serial.println("Door is closed");
-  } else {
-    Serial.println("Door is open");
+  static unsigned long lastUpdate = 0;
+  static int counter = 0;
+  if (millis() - lastUpdate > 1000) {
+    lastUpdate = millis();
+    rtc.updateTime();
+    lcd.print(0, 2, "Counter: " + String(counter) + "    ");
+    lcd.print(0, 3, "                "); // clear line
+    lcd.setCursor(0, 3);
+    rtc.displayTime(lcd, 0, 3);
+    counter++;
+    if (counter > 9999) counter = 0;
   }
-
-  // Handle emergency flags in main loop (non-ISR safe actions here)
-  if (emergencyMin) {
-    emergencyMin = false;
-    Serial.println("Emergency stop: MIN limit triggered");
-    lcd.print(0, 2, "EMERGENCY: MIN STOP ");
-    // ensure relays or other actuators are safe
-    relays.allOff();
-  }
-  if (emergencyMax) {
-    emergencyMax = false;
-    Serial.println("Emergency stop: MAX limit triggered");
-    lcd.print(0, 3, "EMERGENCY: MAX STOP ");
-    relays.allOff();
-  }
-
-  // Example: display motion state on Serial and LCD (no control logic)
-  static bool lastPir = false;
-  if (pir.isMotion() != lastPir) {
-    lastPir = pir.isMotion();
-    Serial.print("PIR motion: "); Serial.println(lastPir ? "YES" : "NO");
-    lcd.clear();
-    lcd.print(0, 0, "Smart Cabinet");
-    lcd.print(0, 1, lastPir ? "Motion detected" : "No motion");
-    if (lastPir) buzzer.beep(150, 2000);
-  }
-
-  // Keep loop light and responsive
-  delay(20);
 }
