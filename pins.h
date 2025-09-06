@@ -1,8 +1,6 @@
 #ifndef SMART_CABINET_PINS_H
 #define SMART_CABINET_PINS_H
 
-// Pin assignments for ESP32 - change to match your wiring
-
 // PIR motion sensor
 static const uint8_t PIR_PIN = 34; // input-only
 
@@ -18,7 +16,7 @@ static const uint8_t FINGER_TX_PIN = 17; // TX2
 
 // TB6600 drivers (DIR, STEP, ENABLE)
 static const uint8_t TB1_DIR = 2;
-static const uint8_t TB1_STEP = 4;
+static const uint8_t TB1_STEP = 25;
 static const uint8_t TB1_ENABLE = 15;
 
 static const uint8_t TB2_DIR = 18;
@@ -34,5 +32,8 @@ static const uint8_t RELAY4_PIN = 27;
 // Limit switches
 static const uint8_t LIMIT_MIN_PIN = 32;
 static const uint8_t LIMIT_MAX_PIN = 33;
+
+// Reed switch
+static const uint8_t REED_SWITCH_PIN = 34;
 
 #endif // SMART_CABINET_PINS_H
