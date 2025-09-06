@@ -19,8 +19,8 @@ static const uint8_t TB1_DIR = 2;
 static const uint8_t TB1_STEP = 25;
 static const uint8_t TB1_ENABLE = 15;
 
-static const uint8_t TB2_DIR = 18;
-static const uint8_t TB2_STEP = 19;
+static const uint8_t TB2_DIR = 32;
+static const uint8_t TB2_STEP = 33;
 static const uint8_t TB2_ENABLE = 5;
 
 // 4-channel relay pins
@@ -35,9 +35,9 @@ static const uint8_t LIMIT_MAX_PIN = 33;
 
 
 // DS1302 RTC pins
-static const uint8_t DS1302_CE_PIN = 4;   // RST
-static const uint8_t DS1302_SCK_PIN = 5;  // CLK
-static const uint8_t DS1302_IO_PIN = 6;   // DAT
+static const uint8_t DS1302_CE_PIN = 0;   // RST
+static const uint8_t DS1302_SCK_PIN = 18;  // CLK
+static const uint8_t DS1302_IO_PIN = 5;   // DAT
 
 // Reed switch
 static const uint8_t REED_SWITCH_PIN = 34;

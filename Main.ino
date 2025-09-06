@@ -124,8 +124,7 @@ void loop() {
     lastUpdate = millis();
     rtc.updateTime();
     lcd.print(0, 2, "Counter: " + String(counter) + "    ");
-    lcd.print(0, 3, "                "); // clear line
-    lcd.setCursor(0, 3);
+    lcd.clear();
     rtc.displayTime(lcd, 0, 3);
     counter++;
     if (counter > 9999) counter = 0;
