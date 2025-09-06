@@ -129,4 +129,14 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 
 ---
 
+
 For further assistance, refer to the detailed comments in the codebase or contact the project maintainer.
+
+---
+
+## Contact
+📧 Email: quezon.province.pd@gmail.com  
+🐙 GitHub: [github.com/qppd](https://github.com/qppd)  
+🌐 Portfolio: [sajed-mendoza.onrender.com](https://sajed-mendoza.onrender.com)  
+📘 Facebook: [facebook.com/qppd.dev](https://facebook.com/qppd.dev)  
+📄 Facebook Page: [facebook.com/QUEZONPROVINCEDEVS](https://facebook.com/QUEZONPROVINCEDEVS)
