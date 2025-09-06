@@ -1,5 +1,5 @@
 
-<h1 align="center">🔒 Smart Cabinet - ESP32</h1>
+<h1 align="center">🔒 Smart Cabinet</h1>
 
 <p align="center">
   <b>Smart Automated Storage Cabinet</b><br>
