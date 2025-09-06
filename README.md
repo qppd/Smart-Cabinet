@@ -1,4 +1,11 @@
-# Smart Cabinet
+
+<h1 align="center">🔒 Smart Cabinet - ESP32</h1>
+
+<p align="center">
+  <b>Smart Automated Storage Cabinet</b><br>
+  Built using <b>ESP32</b> for secure, automated, and connected storage with fingerprint authentication, sensors, and WebSocket support.<br>
+  Designed by <a href="https://github.com/qppd">QPPD</a> for smart access and automation solutions.
+</p>
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -126,11 +133,6 @@ The Smart Cabinet is an advanced storage solution designed to enhance security a
 - `ReedSwitch.h/cpp`: Reed switch class.
 - `TB6600.h/cpp`: Stepper motor driver class.
 - `WebSocketClient.h/cpp`, `WebSocketServer.h/cpp`: WebSocket communication classes.
-
----
-
-
-For further assistance, refer to the detailed comments in the codebase or contact the project maintainer.
 
 ---
 
