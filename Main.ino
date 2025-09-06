@@ -49,7 +49,7 @@ void IRAM_ATTR isrLimitMax() {
 // Components instances
 //MotionSensor pir(PIR_PIN);
 I2CLcd lcd(LCD_ADDR, 20, 4);
-DS1302Rtc rtc;
+DS1302Rtc rtc(DS1302_CE_PIN, DS1302_SCK_PIN, DS1302_IO_PIN);
 //Buzzer buzzer(BUZZER_PIN, 0, 2000);
 //FingerprintAS608 finger(FingerSerial, 57600);
 

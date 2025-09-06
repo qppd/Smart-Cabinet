@@ -33,6 +33,12 @@ static const uint8_t RELAY4_PIN = 27;
 static const uint8_t LIMIT_MIN_PIN = 32;
 static const uint8_t LIMIT_MAX_PIN = 33;
 
+
+// DS1302 RTC pins
+static const uint8_t DS1302_CE_PIN = 4;   // RST
+static const uint8_t DS1302_SCK_PIN = 5;  // CLK
+static const uint8_t DS1302_IO_PIN = 6;   // DAT
+
 // Reed switch
 static const uint8_t REED_SWITCH_PIN = 34;
 
