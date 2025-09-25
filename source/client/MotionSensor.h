@@ -38,4 +38,3 @@ private:
 // Implementations moved to MotionSensor.cpp
 
 #endif // COMPONENTS_MOTION_SENSOR_H
-

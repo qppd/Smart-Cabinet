@@ -1,4 +1,3 @@
-
 #include "WebSocketClient.h"
 
 WebSocketClient::WebSocketClient() : port(81), path("/"), connected(false) {}

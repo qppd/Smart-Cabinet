@@ -1,45 +1,50 @@
-#ifndef SMART_CABINET_PINS_H
-#define SMART_CABINET_PINS_H
+#ifndef SMART_CABINET_HOST_PINS_H
+#define SMART_CABINET_HOST_PINS_H
 
-// PIR motion sensor
-static const uint8_t PIR_PIN = 34; // input-only
+// ===========================================
+// HOST DEVICE PIN CONFIGURATION
+// ===========================================
+// This configuration is for the host ESP32 that handles:
+// - Fingerprint authentication
+// - User interface (LCD, Buzzer)
+// - Real-time clock
+// - WebSocket server communication
+// - System coordination and control
 
-// I2C LCD
+// I2C LCD Display
 static const uint8_t LCD_ADDR = 0x27; // I2C address (SDA=21, SCL=22 by default)
 
-// Buzzer
+// Buzzer for Audio Feedback
 static const uint8_t BUZZER_PIN = 25;
 
-// Fingerprint module (Serial2)
+// Fingerprint Sensor Module (Serial2)
 static const uint8_t FINGER_RX_PIN = 16; // RX2
 static const uint8_t FINGER_TX_PIN = 17; // TX2
 
-// TB6600 drivers (DIR, STEP, ENABLE)
-static const uint8_t TB1_DIR = 2;
-static const uint8_t TB1_STEP = 25;
-static const uint8_t TB1_ENABLE = 15;
+// DS1302 Real-Time Clock Module
+static const uint8_t DS1302_CE_PIN = 0;   // RST/CE pin
+static const uint8_t DS1302_SCK_PIN = 18; // CLK/SCK pin  
+static const uint8_t DS1302_IO_PIN = 5;   // DAT/IO pin
 
-static const uint8_t TB2_DIR = 32;
-static const uint8_t TB2_STEP = 33;
-static const uint8_t TB2_ENABLE = 5;
+// Network Configuration
+// WiFi credentials for WebSocket server
+static const char* HOST_WIFI_SSID = "YourWiFiSSID";
+static const char* HOST_WIFI_PASSWORD = "YourWiFiPassword";
+static const uint16_t HOST_WEBSOCKET_PORT = 81;
 
-// 4-channel relay pins
-static const uint8_t RELAY1_PIN = 12;
-static const uint8_t RELAY2_PIN = 13;
-static const uint8_t RELAY3_PIN = 14;
-static const uint8_t RELAY4_PIN = 27;
+// System Constants
+static const unsigned long HOST_DISPLAY_UPDATE_INTERVAL = 1000;    // LCD update frequency
+static const unsigned long HOST_FINGERPRINT_CHECK_INTERVAL = 500;  // Fingerprint scan frequency
+static const unsigned long HOST_STATUS_BROADCAST_INTERVAL = 5000;  // Status broadcast frequency
 
-// Limit switches
-static const uint8_t LIMIT_MIN_PIN = 32;
-static const uint8_t LIMIT_MAX_PIN = 33;
+// Fingerprint Authentication Settings
+static const uint8_t MAX_FINGERPRINT_ATTEMPTS = 3;       // Max failed attempts before lockout
+static const unsigned long LOCKOUT_DURATION = 30000;     // Lockout duration (30 seconds)
+static const uint8_t MAX_ENROLLED_FINGERPRINTS = 50;     // Maximum users
 
+// Audio Feedback Settings
+static const unsigned int SUCCESS_BEEP_FREQ = 1500;      // Success tone frequency
+static const unsigned int ERROR_BEEP_FREQ = 800;         // Error tone frequency
+static const unsigned int FEEDBACK_BEEP_FREQ = 2000;     // General feedback frequency
 
-// DS1302 RTC pins
-static const uint8_t DS1302_CE_PIN = 0;   // RST
-static const uint8_t DS1302_SCK_PIN = 18;  // CLK
-static const uint8_t DS1302_IO_PIN = 5;   // DAT
-
-// Reed switch
-static const uint8_t REED_SWITCH_PIN = 34;
-
-#endif // SMART_CABINET_PINS_H
+#endif // SMART_CABINET_HOST_PINS_H
