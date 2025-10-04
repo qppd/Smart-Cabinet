@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, real-time monitoring, and seamless user interaction through biometric authentication and automated mechanical operations.
+The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, and seamless user interaction through biometric authentication and automated mechanical operations.
 
 ### 🎯 Project Goals
 - **Security**: Multi-layered access control with biometric authentication
@@ -63,23 +63,18 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 - **Smart Motion Detection**: PIR sensor with adaptive sensitivity
 - **Auto-Close System**: Configurable timeout (default: 60 seconds)
 - **State Management**: Advanced finite state machine for reliable operation
-- **Predictive Maintenance**: Component health monitoring and alerts
 
 ### 🛡️ **Safety Systems**
 - **Emergency Stop**: Immediate motor shutdown via limit switches
 - **Position Monitoring**: Reed switch for precise door state detection
-- **Motor Protection**: Timeout and overcurrent protection
 - **Fail-Safe Design**: Secure lock state during power failures
 
-### 🌐 **Connectivity & Monitoring**
+### 🌐 **Connectivity**
 - **WebSocket Communication**: Real-time bidirectional data exchange
-- **Remote Monitoring**: Live system status and diagnostic information
-- **WiFi Integration**: Seamless network connectivity with auto-reconnection
-- **JSON API**: Standardized communication protocol
 
 ### 💡 **User Experience**
 - **Visual Feedback**: 20x4 I2C LCD with status information
-- **Audio Alerts**: Configurable buzzer notifications
+- **Audio Alerts**: buzzer notifications
 - **LED Illumination**: Automatic interior lighting control
 - **Time Display**: Real-time clock for timestamp logging
 
