@@ -895,7 +895,7 @@ We welcome contributions from the community! Here's how you can help improve the
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/your-username/Smart-Cabinet.git
+   git clone https://github.com/qppd/Smart-Cabinet.git
    cd Smart-Cabinet
    git checkout -b feature/your-feature-name
    ```
