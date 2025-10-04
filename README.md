@@ -964,14 +964,11 @@ We welcome contributions from the community! Here's how you can help improve the
 - 🌐 **Portfolio**: [sajed-mendoza.onrender.com](https://sajed-mendoza.onrender.com)
 - 🐙 **GitHub**: [@qppd](https://github.com/qppd)  
 - 📧 **Email**: quezon.province.pd@gmail.com
-- 💼 **LinkedIn**: [Sajed Mendoza](https://linkedin.com/in/sajed-mendoza)
 
 ### 🌐 **Community & Social**
 
 - 📘 **Facebook Developer Page**: [QPPD Dev](https://facebook.com/qppd.dev)
-- 🏢 **Organization**: [Quezon Province Devs](https://facebook.com/QUEZONPROVINCEDEVS)  
-- 💬 **Discord**: [Join our community server](https://discord.gg/qppd-dev)
-- 📱 **Telegram**: [@qppd_support](https://t.me/qppd_support)
+- 🏢 **Organization**: [Quezon Province Programmer/Developers](https://facebook.com/QUEZONPROVINCEDEVS)  
 
 ### 🛠️ **Technical Support**
 
@@ -987,25 +984,7 @@ We welcome contributions from the community! Here's how you can help improve the
 - **Live Chat**: Available on portfolio website during business hours
 
 ### 📚 **Additional Resources**
-
-- 📖 **Documentation Wiki**: [Comprehensive guides and tutorials](https://github.com/qppd/Smart-Cabinet/wiki)
-- 🎥 **Video Tutorials**: [YouTube channel with setup guides](https://youtube.com/@qppd-dev)
-- 📦 **Parts List**: [Recommended suppliers and components](https://github.com/qppd/Smart-Cabinet/wiki/parts-list)
 - 🔧 **3D Models**: [Printable enclosures and mounting brackets](https://github.com/qppd/Smart-Cabinet/tree/main/model)
-
-### 🌍 **Regional Support**
-
-**Philippines (Primary Region):**
-- 📞 **Phone Support**: +63 xxx-xxx-xxxx (Business hours: 9 AM - 6 PM PHT)
-- 🏪 **Local Workshops**: Available in Manila, Cebu, and Davao
-- 🚚 **Hardware Support**: Component sourcing and assembly assistance
-
-**International:**
-- 🌐 **Online Support**: Email and video call assistance
-- 📦 **Shipping**: Component kits available worldwide
-- 🤝 **Partnerships**: Seeking regional distributors and technical partners
-
----
 
 ## 📄 License
 
@@ -1038,7 +1017,6 @@ SOFTWARE.
 ### ⚖️ **License Terms**
 
 **✅ Permissions:**
-- ✅ **Commercial Use**: Build and sell systems based on this design
 - ✅ **Modification**: Customize and extend functionality  
 - ✅ **Distribution**: Share modified versions with others
 - ✅ **Private Use**: Use for personal projects and learning
@@ -1048,7 +1026,6 @@ SOFTWARE.
 - 📋 **Copyright Notice**: Credit original author in derivative works
 
 **❌ Limitations:**
-- ❌ **Liability**: No warranty or liability for damages
 - ❌ **Warranty**: Software provided "as-is" without guarantees
 
 ### 🎓 **Educational Use**
@@ -1064,10 +1041,8 @@ This project is specifically designed to be educational and learning-friendly:
 
 For commercial deployments requiring additional support or custom licensing:
 
-- **Enterprise Support**: Priority technical assistance and custom development
 - **Volume Licensing**: Special terms for large-scale deployments
 - **OEM Integration**: White-label licensing for product manufacturers
-- **Training Services**: Professional training and certification programs
 
 **Contact**: quezon.province.pd@gmail.com for commercial licensing inquiries.
 
