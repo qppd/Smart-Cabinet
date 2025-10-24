@@ -15,7 +15,7 @@
 static const uint8_t LCD_ADDR = 0x27; // I2C address (SDA=21, SCL=22 by default)
 
 // Buzzer for Audio Feedback
-static const uint8_t BUZZER_PIN = 25;
+static const uint8_t BUZZER_PIN = 4;
 
 // Fingerprint Sensor Module (Serial2)
 static const uint8_t FINGER_RX_PIN = 16; // RX2
@@ -23,8 +23,8 @@ static const uint8_t FINGER_TX_PIN = 17; // TX2
 
 // DS1302 Real-Time Clock Module
 static const uint8_t DS1302_CE_PIN = 0;   // RST/CE pin
-static const uint8_t DS1302_SCK_PIN = 18; // CLK/SCK pin  
-static const uint8_t DS1302_IO_PIN = 5;   // DAT/IO pin
+static const uint8_t DS1302_SCK_PIN = 19; // CLK/SCK pin  
+static const uint8_t DS1302_IO_PIN = 18;   // DAT/IO pin
 
 // Network Configuration
 // WiFi credentials for WebSocket server
