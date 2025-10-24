@@ -6,13 +6,26 @@
 [![ESP32](https://img.shields.io/badge/Platform-ESP32-blue.svg)](https://espressif.com/)
 [![Arduino](https://img.shields.io/badge/IDE-Arduino-00979D.svg)](https://www.arduino.cc/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.0-brightgreen.svg)](https://github.com/qppd/Smart-Cabinet)
+[![Version](https://img.shields.io/badge/Version-2.0-brightgreen.svg)](https://github.com/qppd/Smart-Cabinet)
 
 **An advanced IoT-enabled secure storage solution with fingerprint authentication, automated mechanisms, and intelligent monitoring.**
 
 *Engineered by [QPPD](https://github.com/qppd) for smart access control and automated storage management.*
 
 </div>
+
+---
+
+## 🔄 Recent Changes (v2.0)
+
+### October 2025 Update
+- ✅ **Replaced DS1302 RTC with NTP** - Internet-based time synchronization (GMT+8)
+- ✅ **Added Fingerprint Management** - Delete fingerprints and empty database features
+- ✅ **Improved Buzzer System** - Non-blocking PWM-based buzzer with proper timing
+- ✅ **WiFi Integration** - Automatic WiFi connection with credential management
+- ✅ **WebSocket Server** - Real-time communication between host and client (under development)
+- ✅ **Enhanced Error Handling** - Better debugging and crash prevention
+- ⚠️ **Known Issue**: WebSocket blocking - considering ESP-NOW as alternative
 
 ---
 

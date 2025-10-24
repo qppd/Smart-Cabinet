@@ -1,5 +1,5 @@
 #include "I2CLcd.h"
-#include "DS1302Rtc.h"
+#include "NTPTime.h"
 #include "Buzzer.h"
 #include "FingerprintAS608.h"
 #include "WebSocketServer.h"
@@ -12,8 +12,8 @@ HardwareSerial FingerSerial(2);
 
 // Component instances
 I2CLcd lcd(LCD_ADDR, 20, 4);
-DS1302Rtc rtc(DS1302_CE_PIN, DS1302_SCK_PIN, DS1302_IO_PIN);
-Buzzer buzzer(BUZZER_PIN, 0, 2000);
+NTPTime ntpTime;
+Buzzer buzzer(BUZZER_PIN, 5, 2000);  // Use LEDC channel 5 to avoid WiFi conflicts
 FingerprintAS608 finger(FingerSerial, 57600);
 WebSocketServer wsServer;
 
@@ -30,16 +30,18 @@ void setup() {
   lcd.print(0, 0, "Smart Cabinet Host");
   lcd.print(0, 1, "Initializing...");
 
-  // RTC
-  rtc.begin();
-  Serial.println("[HOST] RTC initialized");
-
   // Buzzer
   buzzer.begin();
   buzzer.beep(100, 1500);
   Serial.println("[HOST] Buzzer initialized");
 
-  // Fingerprint serial
+  // Fingerprint serial - Configure RX/TX pins
+  FingerSerial.begin(57600, SERIAL_8N1, FINGER_RX_PIN, FINGER_TX_PIN);
+  Serial.print("[HOST] Fingerprint serial configured on RX:");
+  Serial.print(FINGER_RX_PIN);
+  Serial.print(" TX:");
+  Serial.println(FINGER_TX_PIN);
+  
   finger.begin();
   if (finger.verifySensor()) {
     Serial.println("[HOST] Fingerprint sensor OK");
@@ -49,10 +51,32 @@ void setup() {
     lcd.print(0, 2, "Fingerprint: ERROR");
   }
 
+  // Connect to WiFi
+  lcd.print(0, 3, "WiFi: Connecting...");
+  wsServer.setWiFiCredentials(HOST_WIFI_SSID, HOST_WIFI_PASSWORD);
+  if (wsServer.connectWiFi()) {
+    lcd.clear();
+    lcd.print(0, 0, "Smart Cabinet Host");
+    lcd.print(0, 1, "WiFi: Connected");
+    lcd.print(0, 2, wsServer.getIPAddress());
+  } else {
+    lcd.print(0, 3, "WiFi: Failed!");
+  }
+  delay(2000);
+
+  // Initialize NTP Time (requires WiFi)
+  ntpTime.begin();
+  Serial.println("[HOST] NTP time initialized");
+
   // Initialize WebSocket Server
   wsServer.begin();
   Serial.println("[HOST] WebSocket server started");
-  lcd.print(0, 3, "WebSocket: Ready");
+  
+  // Display date and time from NTP
+  ntpTime.updateTime();
+  lcd.clear();
+  lcd.print(0, 0, "Smart Cabinet Host");
+  ntpTime.displayTime(lcd, 0, 3);
 
   Serial.println("[HOST] Host controller initialization complete");
   Serial.println("===============================================");
@@ -67,20 +91,23 @@ void loop() {
   static unsigned long lastUpdate = 0;
   static unsigned long lastFingerprintCheck = 0;
   
+  // Update buzzer state (required for beep timing)
+  buzzer.update();
+  
   // Handle WebSocket communication
-  wsServer.loop();
+  //wsServer.loop();
   
   // Update display every second
   if (millis() - lastUpdate > 1000) {
     lastUpdate = millis();
-    rtc.updateTime();
+    ntpTime.updateTime();
     
     // Clear LCD and update display
     lcd.clear();
     lcd.print(0, 0, "Smart Cabinet Host");
     
     // Show current time
-    rtc.displayTime(lcd, 0, 1);
+    ntpTime.displayTime(lcd, 0, 1);
     
     // Show system status
     if (wsServer.hasConnectedClients()) {

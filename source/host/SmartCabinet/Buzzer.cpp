@@ -13,8 +13,8 @@ void Buzzer::begin() {
 
 void Buzzer::on() {
   _active = true;
-  // full duty cycle (255 / 8-bit)
-  ledcWrite(_pin, 200);
+  // 50% duty cycle works better for most piezo buzzers
+  ledcWrite(_pin, 128);
 }
 
 void Buzzer::off() {

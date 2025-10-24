@@ -15,7 +15,7 @@
 static const uint8_t LCD_ADDR = 0x27; // I2C address (SDA=21, SCL=22 by default)
 
 // Buzzer for Audio Feedback
-static const uint8_t BUZZER_PIN = 4;
+static const uint8_t BUZZER_PIN = 5;
 
 // Fingerprint Sensor Module (Serial2)
 static const uint8_t FINGER_RX_PIN = 16; // RX2
@@ -28,8 +28,8 @@ static const uint8_t DS1302_IO_PIN = 18;   // DAT/IO pin
 
 // Network Configuration
 // WiFi credentials for WebSocket server
-static const char* HOST_WIFI_SSID = "YourWiFiSSID";
-static const char* HOST_WIFI_PASSWORD = "YourWiFiPassword";
+static const char* HOST_WIFI_SSID = "QPPD";
+static const char* HOST_WIFI_PASSWORD = "Programmer136";
 static const uint16_t HOST_WEBSOCKET_PORT = 81;
 
 // System Constants

@@ -15,8 +15,17 @@ public:
   int getTemplateCount();
   // Enroll a finger to an ID (blocking, returns true on success)
   bool enroll(uint16_t id);
+  // Delete a fingerprint by ID, returns true on success
+  bool deleteFingerprint(uint16_t id);
+  // Empty the entire fingerprint database, returns true on success
+  bool emptyDatabase();
   // Search for fingerprint, returns -1 on error, 0 if not found, or matching ID
   int search();
+  
+  // Check if finger is detected on the sensor
+  bool isFingerDetected();
+  // Authenticate fingerprint, returns user ID on success, -1 on failure
+  int authenticate();
 
   // Non-blocking search: starts a search and returns immediately. When complete,
   // the provided callback will be called with the result (id or 0 not found or -1 error).
