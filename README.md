@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, real-time monitoring, and seamless user interaction through biometric authentication and automated mechanical operations.
+The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, and seamless user interaction through biometric authentication and automated mechanical operations.
 
 ### 🎯 Project Goals
 - **Security**: Multi-layered access control with biometric authentication
@@ -63,23 +63,18 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 - **Smart Motion Detection**: PIR sensor with adaptive sensitivity
 - **Auto-Close System**: Configurable timeout (default: 60 seconds)
 - **State Management**: Advanced finite state machine for reliable operation
-- **Predictive Maintenance**: Component health monitoring and alerts
 
 ### 🛡️ **Safety Systems**
 - **Emergency Stop**: Immediate motor shutdown via limit switches
 - **Position Monitoring**: Reed switch for precise door state detection
-- **Motor Protection**: Timeout and overcurrent protection
 - **Fail-Safe Design**: Secure lock state during power failures
 
-### 🌐 **Connectivity & Monitoring**
+### 🌐 **Connectivity**
 - **WebSocket Communication**: Real-time bidirectional data exchange
-- **Remote Monitoring**: Live system status and diagnostic information
-- **WiFi Integration**: Seamless network connectivity with auto-reconnection
-- **JSON API**: Standardized communication protocol
 
 ### 💡 **User Experience**
 - **Visual Feedback**: 20x4 I2C LCD with status information
-- **Audio Alerts**: Configurable buzzer notifications
+- **Audio Alerts**: buzzer notifications
 - **LED Illumination**: Automatic interior lighting control
 - **Time Display**: Real-time clock for timestamp logging
 
@@ -900,7 +895,7 @@ We welcome contributions from the community! Here's how you can help improve the
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/your-username/Smart-Cabinet.git
+   git clone https://github.com/qppd/Smart-Cabinet.git
    cd Smart-Cabinet
    git checkout -b feature/your-feature-name
    ```
@@ -969,14 +964,11 @@ We welcome contributions from the community! Here's how you can help improve the
 - 🌐 **Portfolio**: [sajed-mendoza.onrender.com](https://sajed-mendoza.onrender.com)
 - 🐙 **GitHub**: [@qppd](https://github.com/qppd)  
 - 📧 **Email**: quezon.province.pd@gmail.com
-- 💼 **LinkedIn**: [Sajed Mendoza](https://linkedin.com/in/sajed-mendoza)
 
 ### 🌐 **Community & Social**
 
 - 📘 **Facebook Developer Page**: [QPPD Dev](https://facebook.com/qppd.dev)
-- 🏢 **Organization**: [Quezon Province Devs](https://facebook.com/QUEZONPROVINCEDEVS)  
-- 💬 **Discord**: [Join our community server](https://discord.gg/qppd-dev)
-- 📱 **Telegram**: [@qppd_support](https://t.me/qppd_support)
+- 🏢 **Organization**: [Quezon Province Programmer/Developers](https://facebook.com/QUEZONPROVINCEDEVS)  
 
 ### 🛠️ **Technical Support**
 
@@ -992,25 +984,7 @@ We welcome contributions from the community! Here's how you can help improve the
 - **Live Chat**: Available on portfolio website during business hours
 
 ### 📚 **Additional Resources**
-
-- 📖 **Documentation Wiki**: [Comprehensive guides and tutorials](https://github.com/qppd/Smart-Cabinet/wiki)
-- 🎥 **Video Tutorials**: [YouTube channel with setup guides](https://youtube.com/@qppd-dev)
-- 📦 **Parts List**: [Recommended suppliers and components](https://github.com/qppd/Smart-Cabinet/wiki/parts-list)
 - 🔧 **3D Models**: [Printable enclosures and mounting brackets](https://github.com/qppd/Smart-Cabinet/tree/main/model)
-
-### 🌍 **Regional Support**
-
-**Philippines (Primary Region):**
-- 📞 **Phone Support**: +63 xxx-xxx-xxxx (Business hours: 9 AM - 6 PM PHT)
-- 🏪 **Local Workshops**: Available in Manila, Cebu, and Davao
-- 🚚 **Hardware Support**: Component sourcing and assembly assistance
-
-**International:**
-- 🌐 **Online Support**: Email and video call assistance
-- 📦 **Shipping**: Component kits available worldwide
-- 🤝 **Partnerships**: Seeking regional distributors and technical partners
-
----
 
 ## 📄 License
 
@@ -1043,7 +1017,6 @@ SOFTWARE.
 ### ⚖️ **License Terms**
 
 **✅ Permissions:**
-- ✅ **Commercial Use**: Build and sell systems based on this design
 - ✅ **Modification**: Customize and extend functionality  
 - ✅ **Distribution**: Share modified versions with others
 - ✅ **Private Use**: Use for personal projects and learning
@@ -1053,7 +1026,6 @@ SOFTWARE.
 - 📋 **Copyright Notice**: Credit original author in derivative works
 
 **❌ Limitations:**
-- ❌ **Liability**: No warranty or liability for damages
 - ❌ **Warranty**: Software provided "as-is" without guarantees
 
 ### 🎓 **Educational Use**
@@ -1069,10 +1041,8 @@ This project is specifically designed to be educational and learning-friendly:
 
 For commercial deployments requiring additional support or custom licensing:
 
-- **Enterprise Support**: Priority technical assistance and custom development
 - **Volume Licensing**: Special terms for large-scale deployments
 - **OEM Integration**: White-label licensing for product manufacturers
-- **Training Services**: Professional training and certification programs
 
 **Contact**: quezon.province.pd@gmail.com for commercial licensing inquiries.
 
