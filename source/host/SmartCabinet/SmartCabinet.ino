@@ -162,45 +162,43 @@ void loop() {
 }
 
 void checkFingerprint() {
-  // Check if finger is detected
-  if (finger.isFingerDetected()) {
-    Serial.println("[HOST] Finger detected, starting authentication...");
-    lcd.print(0, 3, "Authenticating...");
-    buzzer.beep(50, 2000); // Quick beep for feedback
+  // Try to authenticate directly (authenticate() already checks for finger)
+  int result = finger.authenticate();
+  
+  if (result >= 0) {
+    // Authentication successful
+    Serial.print("[HOST] Authentication successful! User ID: ");
+    Serial.println(result);
     
-    int result = finger.authenticate();
+    lcd.print(0, 3, "Access Granted!   ");
+    buzzer.beep(200, 1500); // Success tone
+    delay(100);
+    buzzer.beep(200, 2000);
     
-    if (result >= 0) {
-      // Authentication successful
-      Serial.print("[HOST] Authentication successful! User ID: ");
-      Serial.println(result);
-      
-      lcd.print(0, 3, "Access Granted!   ");
-      buzzer.beep(200, 1500); // Success tone
-      delay(100);
-      buzzer.beep(200, 2000);
-      
-      // Send unlock command to client via ESP-NOW
-      espNow.sendUnlockCommand(result);
-      
-    } else {
-      // Authentication failed
-      Serial.println("[HOST] Authentication failed");
-      lcd.print(0, 3, "Access Denied!    ");
-      
-      // Error beep sequence
-      for (int i = 0; i < 3; i++) {
-        buzzer.beep(100, 800);
-        delay(100);
-      }
-      
-      // Send authentication failure to client via ESP-NOW
-      espNow.sendAuthenticationResult(false, -1);
-    }
+    // Send unlock command to client via ESP-NOW
+    espNow.sendUnlockCommand(result);
     
     delay(2000); // Display result for 2 seconds
     lcd.print(0, 3, "Place finger...");
+    
+  } else if (result == -2) {
+    // Finger detected but not matched (wrong finger or not enrolled)
+    Serial.println("[HOST] Authentication failed - No match found");
+    lcd.print(0, 3, "Access Denied!    ");
+    
+    // Error beep sequence
+    for (int i = 0; i < 3; i++) {
+      buzzer.beep(100, 800);
+      delay(100);
+    }
+    
+    // Send authentication failure to client via ESP-NOW
+    espNow.sendAuthenticationResult(false, -1);
+    
+    delay(2000);
+    lcd.print(0, 3, "Place finger...");
   }
+  // result == -1: No finger detected or sensor error (silent, no action needed)
 }
 
 void enrollFingerprint() {

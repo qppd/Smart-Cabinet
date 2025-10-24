@@ -30,6 +30,7 @@ int FingerprintAS608::authenticate() {
   uint8_t p = _finger.getImage();
   if (p != FINGERPRINT_OK) {
     // Failed to get image (no finger, communication error, etc.)
+    // Return -1 for no finger detected (silent failure)
     return -1;
   }
   
@@ -37,7 +38,8 @@ int FingerprintAS608::authenticate() {
   p = _finger.image2Tz();
   if (p != FINGERPRINT_OK) {
     // Failed to convert (messy image, feature extraction failed, etc.)
-    return -1;
+    Serial.println("[FingerprintAS608] Image conversion failed");
+    return -2; // Image quality issue or wrong finger
   }
   
   // Step 3: Search for match in database
@@ -52,7 +54,7 @@ int FingerprintAS608::authenticate() {
   } else if (p == FINGERPRINT_NOTFOUND) {
     // No match found in database
     Serial.println("[FingerprintAS608] No match found");
-    return -1;
+    return -2; // Fingerprint scanned but not in database
   } else {
     // Communication or other error
     Serial.println("[FingerprintAS608] Search error");

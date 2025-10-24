@@ -19,13 +19,16 @@
 ## 🔄 Recent Changes (v2.0)
 
 ### October 2025 Update
-- ✅ **Replaced DS1302 RTC with NTP** - Internet-based time synchronization (GMT+8)
-- ✅ **Added Fingerprint Management** - Delete fingerprints and empty database features
-- ✅ **Improved Buzzer System** - Non-blocking PWM-based buzzer with proper timing
-- ✅ **WiFi Integration** - Automatic WiFi connection with credential management
-- ✅ **WebSocket Server** - Real-time communication between host and client (under development)
-- ✅ **Enhanced Error Handling** - Better debugging and crash prevention
-- ⚠️ **Known Issue**: WebSocket blocking - considering ESP-NOW as alternative
+- ✅ **ESP-NOW Communication** - Replaced WebSocket with ESP-NOW for reliable host-client communication
+- ✅ **Fingerprint Enrollment System** - One-button enrollment via tactile button on GPIO 23
+- ✅ **Fixed Authentication Flow** - Resolved double-read issue for reliable fingerprint matching
+- ✅ **Improved LCD Display** - Eliminated flickering with optimized refresh logic
+- ✅ **Enhanced Buzzer System** - Non-blocking PWM-based buzzer with proper timing
+- ✅ **NTP Time Synchronization** - Internet-based time display (GMT+8)
+- ✅ **Fingerprint Management** - Delete fingerprints and empty database features
+- ✅ **WiFi Integration** - Automatic WiFi connection for NTP synchronization
+- ✅ **TactileButton Class** - Debounced button handler with press/hold detection
+- ✅ **ESP32 Core 3.1.2 Support** - Updated ESP-NOW callbacks for latest Arduino core
 
 ---
 
@@ -68,6 +71,8 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 
 ### 🔐 **Advanced Security**
 - **Biometric Authentication**: AS608 fingerprint sensor with 50+ user capacity
+- **One-Touch Enrollment**: Simple button-press enrollment system (GPIO 23)
+- **Reliable Matching**: Fixed authentication flow for consistent fingerprint recognition
 - **Multi-layer Locking**: Electronic solenoid + mechanical stepper motor locks
 - **Access Logging**: Real-time authentication tracking and user management
 - **Emergency Override**: Manual unlock procedures for critical situations
@@ -83,13 +88,15 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 - **Fail-Safe Design**: Secure lock state during power failures
 
 ### 🌐 **Connectivity**
-- **WebSocket Communication**: Real-time bidirectional data exchange
+- **ESP-NOW Communication**: Ultra-low latency peer-to-peer communication between controllers
+- **WiFi Integration**: Network connectivity for NTP time synchronization
 
 ### 💡 **User Experience**
-- **Visual Feedback**: 20x4 I2C LCD with status information
-- **Audio Alerts**: buzzer notifications
+- **Visual Feedback**: 20x4 I2C LCD with flicker-free status information
+- **Audio Alerts**: Multi-tone buzzer notifications
 - **LED Illumination**: Automatic interior lighting control
-- **Time Display**: Real-time clock for timestamp logging
+- **Time Display**: NTP-synchronized real-time clock with timezone support
+- **Simple Enrollment**: One-button fingerprint registration process
 
 ---
 
@@ -102,34 +109,35 @@ graph TB
     subgraph "HOST CONTROLLER (Authentication & Logic)"
         A[ESP32 Host] --> B[Fingerprint Sensor AS608]
         A --> C[20x4 I2C LCD Display]
-        A --> D[DS1302 RTC Module]
+        A --> D[NTP Time Sync]
         A --> E[Buzzer Audio Feedback]
-        A --> F[WebSocket Server]
+        A --> F[ESP-NOW Host]
+        A --> G[Enrollment Button GPIO 23]
     end
     
     subgraph "CLIENT CONTROLLER (Physical Operations)"
-        G[ESP32 Client] --> H[PIR Motion Sensor]
-        G --> I[TB6600 Motor Driver 1<br/>Door Mechanism]
-        G --> J[TB6600 Motor Driver 2<br/>Lock Mechanism]
-        G --> K[4-Channel Relay Board]
-        G --> L[Safety Switches]
-        G --> M[Reed Switch]
-        G --> N[WebSocket Client]
+        H[ESP32 Client] --> I[PIR Motion Sensor]
+        H --> J[TB6600 Motor Driver 1<br/>Door Mechanism]
+        H --> K[TB6600 Motor Driver 2<br/>Lock Mechanism]
+        H --> L[4-Channel Relay Board]
+        H --> M[Safety Switches]
+        H --> N[Reed Switch]
+        H --> O[ESP-NOW Client]
     end
     
     subgraph "Physical Hardware"
-        O[NEMA 17 Stepper Motors]
-        P[Solenoid Lock]
-        Q[LED Strip Lighting]
-        R[Limit Switches]
+        P[NEMA 17 Stepper Motors]
+        Q[Solenoid Lock]
+        R[LED Strip Lighting]
+        S[Limit Switches]
     end
     
-    F <==> N
-    I --> O
-    J --> O
+    F <==>|ESP-NOW Protocol| O
+    J --> P
     K --> P
-    K --> Q
+    L --> Q
     L --> R
+    M --> S
 ```
 
 ### 🧠 **Control Flow Architecture**
@@ -163,6 +171,7 @@ stateDiagram-v2
 | Component | Model/Type | Interface | Function |
 |-----------|------------|-----------|----------|
 | **Fingerprint Sensor** | AS608/R307 | UART (Serial2) | Biometric Authentication |
+| **Enrollment Button** | Tactile Push Button | Digital GPIO 23 | Fingerprint Enrollment Trigger |
 | **PIR Motion Sensor** | HC-SR501 | Digital GPIO | User Presence Detection |
 | **Reed Switch** | Magnetic Contact | Digital GPIO | Door Position Sensing |
 | **Limit Switches** | Mechanical NO/NC | Digital GPIO | Motor Safety Limits |
@@ -423,23 +432,48 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 
 1. **Approach Cabinet**: Motion sensor detects user presence
 2. **Fingerprint Scan**: Place enrolled finger on AS608 sensor
-3. **Processing**: Host controller verifies biometric data
+3. **Processing**: Host controller verifies biometric data (single-pass authentication)
 4. **Access Grant**: Valid fingerprint triggers unlock sequence
-5. **Automatic Opening**: Client executes door opening mechanism
+5. **Automatic Opening**: Client executes door opening mechanism via ESP-NOW
+
+**Authentication Flow:**
+- ✅ **Success**: LCD shows "Access Granted!" + ascending beeps + door unlocks
+- ❌ **Denied**: LCD shows "Access Denied!" + error beeps (3 short beeps)
+- ⏸️ **No Finger**: Silent operation (no spam messages)
 
 ### 📝 **Fingerprint Enrollment**
 
-```cpp
-// Enrollment Mode Activation:
-// 1. Power on with specific finger sequence
-// 2. Follow LCD prompts for new user registration
-// 3. Multiple scan captures for improved accuracy
-// 4. Confirmation and user ID assignment
+**Quick Enrollment Process:**
 
-// Maximum Users: 50 fingerprints supported
-// Enrollment Time: ~30 seconds per user
-// Template Storage: Non-volatile flash memory
-```
+1. **Press Enrollment Button** (GPIO 23)
+   - LCD displays "Starting Enroll..."
+   - System auto-assigns next available ID
+
+2. **First Scan**
+   - LCD: "Place finger on sensor..."
+   - Wait for confirmation beep
+   - Hold finger steady on sensor
+
+3. **Remove Finger**
+   - LCD: "Remove finger"
+   - Wait 2 seconds
+
+4. **Second Scan**
+   - LCD: "Place SAME finger again..."
+   - Verify fingerprint matches
+   
+5. **Completion**
+   - **Success**: "ENROLLMENT SUCCESS! User ID: X" + 3 ascending beeps
+   - **Failed**: "ENROLLMENT FAILED!" + 3 error beeps
+   - **Timeout**: 30 seconds if no finger detected
+
+**Enrollment Specifications:**
+- **Maximum Users**: 50 fingerprints supported
+- **Enrollment Time**: ~15-30 seconds per user
+- **Auto ID Assignment**: Based on template count
+- **Database Full Check**: Automatic capacity monitoring
+- **Template Storage**: Non-volatile sensor memory
+- **Button Wiring**: GPIO 23 → Button → GND (internal pullup enabled)
 
 ### 🔄 **System Operation States**
 
@@ -469,26 +503,53 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 
 ## 🔧 API & Communication
 
-### 📡 **WebSocket Protocol**
+### 📡 **ESP-NOW Protocol**
 
-**Connection Details:**
-```javascript
-// WebSocket Server: ws://ESP32_HOST_IP:81/
-// Protocol: JSON-based message exchange
-// Heartbeat: 5-second status updates
-// Auto-reconnect: 5-second retry interval
+**Communication Details:**
+```cpp
+// Protocol: ESP-NOW (Espressif's proprietary)
+// Latency: <10ms typical
+// Range: Up to 200m line-of-sight
+// Pairing: MAC address-based peer connection
+// Reliability: Automatic retransmission on failure
 ```
+
+**Advantages over WebSocket:**
+- ✅ Ultra-low latency communication
+- ✅ No WiFi router dependency
+- ✅ Lower power consumption
+- ✅ Non-blocking operation
+- ✅ Direct peer-to-peer connection
 
 ### 📨 **Message Formats**
 
+**ESP-NOW Data Structure:**
+```cpp
+typedef struct {
+    char command[32];      // Command type: "unlock", "authResult", "status"
+    int userId;            // User ID from fingerprint
+    bool success;          // Success/failure flag
+    char data[64];         // Additional data
+} ESPNowMessage;
+```
+
 **Authentication Event:**
-```json
+```cpp
+// Unlock Command (Host → Client)
 {
-  "type": "authentication",
-  "timestamp": 1640995200000,
-  "user_id": 12,
+  "command": "unlock",
+  "userId": 12,
   "success": true,
-  "fingerprint_score": 95
+  "data": ""
+}
+
+// Authentication Result (Host → Client)
+{
+  "command": "authResult",
+  "userId": 5,
+  "success": false,
+  "data": "Access Denied"
+}
 }
 ```
 
