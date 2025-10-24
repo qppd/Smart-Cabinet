@@ -37,7 +37,7 @@ void setup() {
 
   // Buzzer
   buzzer.begin();
-  buzzer.beep(100, 1500);
+  buzzer.beep(50, 1500); // Quick beep
   Serial.println("[HOST] Buzzer initialized");
 
   // Enrollment Button
@@ -66,7 +66,7 @@ void setup() {
   espNow.setPeerAddress(clientMAC);
   Serial.println("[HOST] ESP-NOW initialized");
   lcd.print(0, 3, "ESP-NOW: Ready");
-  delay(1000);
+  delay(500); // Reduced from 1000ms
 
   // Connect to WiFi for NTP only
   lcd.print(0, 3, "WiFi: Connecting...");
@@ -89,7 +89,7 @@ void setup() {
     Serial.println("\n[HOST] WiFi connection failed");
     lcd.print(0, 3, "WiFi: Failed!");
   }
-  delay(1000);
+  delay(500); // Reduced from 1000ms
 
   // Initialize NTP Time (requires WiFi)
   ntpTime.begin();
@@ -104,9 +104,7 @@ void setup() {
   Serial.println("[HOST] Host controller initialization complete");
   Serial.println("===============================================");
   
-  // Welcome beep sequence
-  buzzer.beep(100, 1000);
-  delay(100);
+  // Single welcome beep
   buzzer.beep(100, 1500);
 }
 
@@ -171,9 +169,7 @@ void checkFingerprint() {
     Serial.println(result);
     
     lcd.print(0, 3, "Access Granted!   ");
-    buzzer.beep(200, 1500); // Success tone
-    delay(100);
-    buzzer.beep(200, 2000);
+    buzzer.beep(200, 2000); // Single success beep
     
     // Send unlock command to client via ESP-NOW
     espNow.sendUnlockCommand(result);
@@ -186,11 +182,8 @@ void checkFingerprint() {
     Serial.println("[HOST] Authentication failed - No match found");
     lcd.print(0, 3, "Access Denied!    ");
     
-    // Error beep sequence
-    for (int i = 0; i < 3; i++) {
-      buzzer.beep(100, 800);
-      delay(100);
-    }
+    // Single error beep
+    buzzer.beep(200, 800);
     
     // Send authentication failure to client via ESP-NOW
     espNow.sendAuthenticationResult(false, -1);
@@ -211,11 +204,8 @@ void enrollFingerprint() {
     Serial.println("[HOST] Maximum fingerprint capacity reached!");
     lcd.print(0, 3, "DB Full!          ");
     
-    // Error beep
-    for (int i = 0; i < 3; i++) {
-      buzzer.beep(100, 800);
-      delay(150);
-    }
+    // Single error beep
+    buzzer.beep(200, 800);
     delay(2000);
     lcd.print(0, 3, "Place finger...");
     return;
@@ -264,12 +254,8 @@ void enrollFingerprint() {
         lcd.print(0, 1, "ENROLLMENT SUCCESS!");
         lcd.print(0, 2, "User ID: " + String(enrollID));
         
-        // Success beeps
-        buzzer.beep(200, 1500);
-        delay(150);
-        buzzer.beep(200, 2000);
-        delay(150);
-        buzzer.beep(300, 2500);
+        // Single success beep
+        buzzer.beep(300, 2000);
         
         success = true;
       } else {
@@ -280,11 +266,8 @@ void enrollFingerprint() {
         lcd.print(0, 1, "ENROLLMENT FAILED!");
         lcd.print(0, 2, "Try again...");
         
-        // Error beeps
-        for (int i = 0; i < 3; i++) {
-          buzzer.beep(100, 800);
-          delay(150);
-        }
+        // Single error beep
+        buzzer.beep(200, 800);
       }
       
       delay(3000);
