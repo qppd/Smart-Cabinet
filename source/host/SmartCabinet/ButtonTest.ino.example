@@ -1,0 +1,27 @@
+// Simple button test sketch
+// Upload this to test if your button is working on GPIO 23
+
+const int BUTTON_PIN = 23;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  
+  Serial.println("=== Button Test ===");
+  Serial.println("Press the button on GPIO 23");
+  Serial.println("With pullup, button should connect to GND");
+}
+
+void loop() {
+  static bool lastState = HIGH;
+  bool currentState = digitalRead(BUTTON_PIN);
+  
+  // Print when state changes
+  if (currentState != lastState) {
+    Serial.print("Button state: ");
+    Serial.println(currentState == LOW ? "PRESSED (LOW)" : "RELEASED (HIGH)");
+    lastState = currentState;
+  }
+  
+  delay(10); // Small delay to prevent serial flooding
+}

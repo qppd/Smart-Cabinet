@@ -21,6 +21,9 @@ static const uint8_t BUZZER_PIN = 5;
 static const uint8_t FINGER_RX_PIN = 16; // RX2
 static const uint8_t FINGER_TX_PIN = 17; // TX2
 
+// Enrollment Button
+static const uint8_t ENROLL_BUTTON_PIN = 23; // Tactile button for fingerprint enrollment
+
 // DS1302 Real-Time Clock Module
 static const uint8_t DS1302_CE_PIN = 0;   // RST/CE pin
 static const uint8_t DS1302_SCK_PIN = 19; // CLK/SCK pin  

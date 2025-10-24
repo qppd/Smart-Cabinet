@@ -3,6 +3,7 @@
 #include "Buzzer.h"
 #include "FingerprintAS608.h"
 #include "ESPNowComm.h"
+#include "TactileButton.h"
 
 // Centralized pin assignments
 #include "pins.h"
@@ -19,6 +20,7 @@ NTPTime ntpTime;
 Buzzer buzzer(BUZZER_PIN, 5, 2000);  // Use LEDC channel 5 to avoid WiFi conflicts
 FingerprintAS608 finger(FingerSerial, 57600);
 ESPNowComm espNow;
+TactileButton enrollButton(ENROLL_BUTTON_PIN);
 
 void setup() {
   // Initialize host controller
@@ -37,6 +39,10 @@ void setup() {
   buzzer.begin();
   buzzer.beep(100, 1500);
   Serial.println("[HOST] Buzzer initialized");
+
+  // Enrollment Button
+  enrollButton.begin();
+  Serial.println("[HOST] Enrollment button initialized");
 
   // Fingerprint serial - Configure RX/TX pins
   FingerSerial.begin(57600, SERIAL_8N1, FINGER_RX_PIN, FINGER_TX_PIN);
@@ -112,6 +118,18 @@ void loop() {
   // Update buzzer state (required for beep timing)
   buzzer.update();
   
+  // Update button state
+  enrollButton.update();
+  
+  // Check for button press to start enrollment
+  if (enrollButton.wasPressed()) {
+    Serial.println("[HOST] Enrollment button pressed!");
+    lcd.print(0, 3, "Starting Enroll...");
+    buzzer.beep(100, 2000);
+    delay(500);
+    enrollFingerprint();
+  }
+  
   // Initialize static display content once
   if (!displayInitialized) {
     lcd.clear();
@@ -183,4 +201,110 @@ void checkFingerprint() {
     delay(2000); // Display result for 2 seconds
     lcd.print(0, 3, "Place finger...");
   }
+}
+
+void enrollFingerprint() {
+  // Get the next available ID
+  int templateCount = finger.getTemplateCount();
+  uint16_t enrollID = templateCount + 1;
+  
+  // Check if we've reached max capacity
+  if (enrollID > MAX_ENROLLED_FINGERPRINTS) {
+    Serial.println("[HOST] Maximum fingerprint capacity reached!");
+    lcd.print(0, 3, "DB Full!          ");
+    
+    // Error beep
+    for (int i = 0; i < 3; i++) {
+      buzzer.beep(100, 800);
+      delay(150);
+    }
+    delay(2000);
+    lcd.print(0, 3, "Place finger...");
+    return;
+  }
+  
+  Serial.print("[HOST] Starting enrollment for ID #");
+  Serial.println(enrollID);
+  
+  // Step 1: Place finger first time
+  lcd.clear();
+  lcd.print(0, 0, "ENROLLMENT MODE");
+  lcd.print(0, 1, "ID: " + String(enrollID));
+  lcd.print(0, 2, "Place finger");
+  lcd.print(0, 3, "on sensor...");
+  
+  buzzer.beep(100, 1500);
+  
+  // Wait for finger and get first image
+  bool success = false;
+  unsigned long timeout = millis() + 30000; // 30 second timeout
+  
+  while (millis() < timeout && !success) {
+    if (finger.isFingerDetected()) {
+      lcd.print(0, 3, "Hold still...    ");
+      buzzer.beep(50, 2000);
+      delay(1000); // Give time to hold finger
+      
+      // Step 2: Remove finger
+      lcd.print(0, 2, "Remove finger");
+      lcd.print(0, 3, "               ");
+      buzzer.beep(100, 1000);
+      delay(2000);
+      
+      // Step 3: Place same finger again
+      lcd.print(0, 2, "Place SAME finger");
+      lcd.print(0, 3, "again...        ");
+      buzzer.beep(100, 1500);
+      
+      // Call the blocking enroll function
+      if (finger.enroll(enrollID)) {
+        // Success!
+        Serial.print("[HOST] Enrollment successful! ID #");
+        Serial.println(enrollID);
+        
+        lcd.clear();
+        lcd.print(0, 1, "ENROLLMENT SUCCESS!");
+        lcd.print(0, 2, "User ID: " + String(enrollID));
+        
+        // Success beeps
+        buzzer.beep(200, 1500);
+        delay(150);
+        buzzer.beep(200, 2000);
+        delay(150);
+        buzzer.beep(300, 2500);
+        
+        success = true;
+      } else {
+        // Failed
+        Serial.println("[HOST] Enrollment failed!");
+        
+        lcd.clear();
+        lcd.print(0, 1, "ENROLLMENT FAILED!");
+        lcd.print(0, 2, "Try again...");
+        
+        // Error beeps
+        for (int i = 0; i < 3; i++) {
+          buzzer.beep(100, 800);
+          delay(150);
+        }
+      }
+      
+      delay(3000);
+      break;
+    }
+    delay(100);
+  }
+  
+  if (!success && millis() >= timeout) {
+    Serial.println("[HOST] Enrollment timeout!");
+    lcd.clear();
+    lcd.print(0, 1, "ENROLLMENT TIMEOUT!");
+    buzzer.beep(200, 800);
+    delay(2000);
+  }
+  
+  // Return to normal display
+  lcd.clear();
+  lcd.print(0, 0, "Smart Cabinet Host");
+  lcd.print(0, 3, "Place finger...");
 }
