@@ -2,10 +2,13 @@
 #include "NTPTime.h"
 #include "Buzzer.h"
 #include "FingerprintAS608.h"
-#include "WebSocketServer.h"
+#include "ESPNowComm.h"
 
 // Centralized pin assignments
 #include "pins.h"
+
+// Client ESP32 MAC Address - REPLACE WITH YOUR CLIENT'S MAC ADDRESS
+uint8_t clientMAC[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 // Serial for fingerprint module
 HardwareSerial FingerSerial(2);
@@ -15,7 +18,7 @@ I2CLcd lcd(LCD_ADDR, 20, 4);
 NTPTime ntpTime;
 Buzzer buzzer(BUZZER_PIN, 5, 2000);  // Use LEDC channel 5 to avoid WiFi conflicts
 FingerprintAS608 finger(FingerSerial, 57600);
-WebSocketServer wsServer;
+ESPNowComm espNow;
 
 void setup() {
   // Initialize host controller
@@ -51,26 +54,40 @@ void setup() {
     lcd.print(0, 2, "Fingerprint: ERROR");
   }
 
-  // Connect to WiFi
+  // Initialize ESP-NOW Communication
+  lcd.print(0, 3, "ESP-NOW: Init...");
+  espNow.begin();
+  espNow.setPeerAddress(clientMAC);
+  Serial.println("[HOST] ESP-NOW initialized");
+  lcd.print(0, 3, "ESP-NOW: Ready");
+  delay(1000);
+
+  // Connect to WiFi for NTP only
   lcd.print(0, 3, "WiFi: Connecting...");
-  wsServer.setWiFiCredentials(HOST_WIFI_SSID, HOST_WIFI_PASSWORD);
-  if (wsServer.connectWiFi()) {
-    lcd.clear();
-    lcd.print(0, 0, "Smart Cabinet Host");
-    lcd.print(0, 1, "WiFi: Connected");
-    lcd.print(0, 2, wsServer.getIPAddress());
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(HOST_WIFI_SSID, HOST_WIFI_PASSWORD);
+  
+  int wifiRetries = 0;
+  while (WiFi.status() != WL_CONNECTED && wifiRetries < 15) {
+    delay(1000);
+    wifiRetries++;
+    Serial.print(".");
+  }
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n[HOST] WiFi connected");
+    Serial.print("[HOST] IP address: ");
+    Serial.println(WiFi.localIP());
+    lcd.print(0, 3, "WiFi: Connected");
   } else {
+    Serial.println("\n[HOST] WiFi connection failed");
     lcd.print(0, 3, "WiFi: Failed!");
   }
-  delay(2000);
+  delay(1000);
 
   // Initialize NTP Time (requires WiFi)
   ntpTime.begin();
   Serial.println("[HOST] NTP time initialized");
-
-  // Initialize WebSocket Server
-  wsServer.begin();
-  Serial.println("[HOST] WebSocket server started");
   
   // Display date and time from NTP
   ntpTime.updateTime();
@@ -90,34 +107,33 @@ void setup() {
 void loop() {
   static unsigned long lastUpdate = 0;
   static unsigned long lastFingerprintCheck = 0;
+  static bool displayInitialized = false;
   
   // Update buzzer state (required for beep timing)
   buzzer.update();
   
-  // Handle WebSocket communication
-  //wsServer.loop();
+  // Initialize static display content once
+  if (!displayInitialized) {
+    lcd.clear();
+    lcd.print(0, 0, "Smart Cabinet Host");
+    lcd.print(0, 3, "Place finger...");
+    displayInitialized = true;
+  }
   
-  // Update display every second
+  // Update display every second (only changing parts)
   if (millis() - lastUpdate > 1000) {
     lastUpdate = millis();
     ntpTime.updateTime();
     
-    // Clear LCD and update display
-    lcd.clear();
-    lcd.print(0, 0, "Smart Cabinet Host");
-    
-    // Show current time
+    // Update time (line 1) - no clear needed
     ntpTime.displayTime(lcd, 0, 1);
     
-    // Show system status
-    if (wsServer.hasConnectedClients()) {
-      lcd.print(0, 2, "Client: Connected");
+    // Update system status (line 2)
+    if (espNow.hasConnectedPeer()) {
+      lcd.print(0, 2, "Client: Connected ");
     } else {
       lcd.print(0, 2, "Client: Waiting...");
     }
-    
-    // Show fingerprint status
-    lcd.print(0, 3, "Place finger...");
   }
   
   // Check for fingerprint every 500ms (more responsive)
@@ -146,8 +162,8 @@ void checkFingerprint() {
       delay(100);
       buzzer.beep(200, 2000);
       
-      // Send unlock command to client
-      wsServer.sendUnlockCommand(result);
+      // Send unlock command to client via ESP-NOW
+      espNow.sendUnlockCommand(result);
       
     } else {
       // Authentication failed
@@ -160,8 +176,8 @@ void checkFingerprint() {
         delay(100);
       }
       
-      // Send authentication failure to client
-      wsServer.sendAuthenticationResult(false, -1);
+      // Send authentication failure to client via ESP-NOW
+      espNow.sendAuthenticationResult(false, -1);
     }
     
     delay(2000); // Display result for 2 seconds
