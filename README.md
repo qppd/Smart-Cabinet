@@ -1,7 +1,7 @@
 
 <div align="center">
 
-# 🔒 Smart Cabinet System
+# Smart Cabinet System
 
 [![ESP32](https://img.shields.io/badge/Platform-ESP32-blue.svg)](https://espressif.com/)
 [![Arduino](https://img.shields.io/badge/IDE-Arduino-00979D.svg)](https://www.arduino.cc/)
@@ -16,49 +16,49 @@
 
 ---
 
-## 🔄 Recent Changes (v2.0)
+## Recent Changes (v2.0)
 
 ### October 2025 Update
-- ✅ **ESP-NOW Communication** - Replaced WebSocket with ESP-NOW for reliable host-client communication
-- ✅ **Fingerprint Enrollment System** - One-button enrollment via tactile button on GPIO 23
-- ✅ **Fixed Authentication Flow** - Resolved double-read issue for reliable fingerprint matching
-- ✅ **Improved LCD Display** - Eliminated flickering with optimized refresh logic
-- ✅ **Enhanced Buzzer System** - Non-blocking PWM-based buzzer with proper timing
-- ✅ **NTP Time Synchronization** - Internet-based time display (GMT+8)
-- ✅ **Fingerprint Management** - Delete fingerprints and empty database features
-- ✅ **WiFi Integration** - Automatic WiFi connection for NTP synchronization
-- ✅ **TactileButton Class** - Debounced button handler with press/hold detection
-- ✅ **ESP32 Core 3.1.2 Support** - Updated ESP-NOW callbacks for latest Arduino core
+- ESP-NOW Communication - Replaced WebSocket with ESP-NOW for reliable host-client communication
+- Fingerprint Enrollment System - One-button enrollment via tactile button on GPIO 23
+- Fixed Authentication Flow - Resolved double-read issue for reliable fingerprint matching
+- Improved LCD Display - Eliminated flickering with optimized refresh logic
+- Enhanced Buzzer System - Non-blocking PWM-based buzzer with proper timing
+- NTP Time Synchronization - Internet-based time display (GMT+8)
+- Fingerprint Management - Delete fingerprints and empty database features
+- WiFi Integration - Automatic WiFi connection for NTP synchronization
+- TactileButton Class - Debounced button handler with press/hold detection
+- ESP32 Core 3.1.2 Support - Updated ESP-NOW callbacks for latest Arduino core
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [🌟 Overview](#-overview)
-- [✨ Key Features](#-key-features)
-- [🏗️ System Architecture](#️-system-architecture)
-- [📦 Hardware Requirements](#-hardware-requirements)
-- [🔌 Wiring Diagram](#-wiring-diagram)
-- [⚙️ Software Dependencies](#️-software-dependencies)
-- [🚀 Installation & Setup](#-installation--setup)
-- [📋 Configuration](#-configuration)
-- [🎮 Operation Guide](#-operation-guide)
-- [🔧 API & Communication](#-api--communication)
-- [🧪 Testing & Validation](#-testing--validation)
-- [🛠️ Troubleshooting](#️-troubleshooting)
-- [📁 Project Structure](#-project-structure)
-- [🔮 Future Enhancements](#-future-enhancements)
-- [🤝 Contributing](#-contributing)
-- [📞 Support & Contact](#-support--contact)
-- [📄 License](#-license)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [System Architecture](#system-architecture)
+- [Hardware Requirements](#hardware-requirements)
+- [Wiring Diagram](#wiring-diagram)
+- [Software Dependencies](#software-dependencies)
+- [Installation & Setup](#installation--setup)
+- [Configuration](#configuration)
+- [Operation Guide](#operation-guide)
+- [API & Communication](#api--communication)
+- [Testing & Validation](#testing--validation)
+- [Troubleshooting](#troubleshooting)
+- [Project Structure](#project-structure)
+- [Future Enhancements](#future-enhancements)
+- [Contributing](#contributing)
+- [Support & Contact](#support--contact)
+- [License](#license)
 
 ---
 
-## 🌟 Overview
+## Overview
 
 The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, and seamless user interaction through biometric authentication and automated mechanical operations.
 
-### 🎯 Project Goals
+### Project Goals
 - **Security**: Multi-layered access control with biometric authentication
 - **Automation**: Intelligent operation with minimal user intervention  
 - **Safety**: Comprehensive emergency systems and fail-safes
@@ -67,9 +67,9 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🔐 **Advanced Security**
+### Advanced Security
 - **Biometric Authentication**: AS608 fingerprint sensor with 50+ user capacity
 - **One-Touch Enrollment**: Simple button-press enrollment system (GPIO 23)
 - **Reliable Matching**: Fixed authentication flow for consistent fingerprint recognition
@@ -77,21 +77,21 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 - **Access Logging**: Real-time authentication tracking and user management
 - **Emergency Override**: Manual unlock procedures for critical situations
 
-### 🤖 **Intelligent Automation**  
+### Intelligent Automation
 - **Smart Motion Detection**: PIR sensor with adaptive sensitivity
 - **Auto-Close System**: Configurable timeout (default: 60 seconds)
 - **State Management**: Advanced finite state machine for reliable operation
 
-### 🛡️ **Safety Systems**
+### Safety Systems
 - **Emergency Stop**: Immediate motor shutdown via limit switches
 - **Position Monitoring**: Reed switch for precise door state detection
 - **Fail-Safe Design**: Secure lock state during power failures
 
-### 🌐 **Connectivity**
+### Connectivity
 - **ESP-NOW Communication**: Ultra-low latency peer-to-peer communication between controllers
 - **WiFi Integration**: Network connectivity for NTP time synchronization
 
-### 💡 **User Experience**
+### User Experience
 - **Visual Feedback**: 20x4 I2C LCD with flicker-free status information
 - **Audio Alerts**: Multi-tone buzzer notifications
 - **LED Illumination**: Automatic interior lighting control
@@ -100,9 +100,9 @@ The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solut
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
-### 📡 **Distributed Controller Design**
+### Distributed Controller Design
 
 ```mermaid
 graph TB
@@ -140,7 +140,7 @@ graph TB
     M --> S
 ```
 
-### 🧠 **Control Flow Architecture**
+### Control Flow Architecture
 
 ```mermaid
 stateDiagram-v2
@@ -160,14 +160,14 @@ stateDiagram-v2
 
 ---
 
-## 📦 Hardware Requirements
+## Hardware Requirements
 
-### 🖥️ **Microcontrollers**
+### Microcontrollers
 | Component | Specification | Quantity | Purpose |
 |-----------|---------------|----------|---------|
 | **ESP32 DevKit** | 240MHz, 4MB Flash, WiFi/BT | 2 | Host & Client Controllers |
 
-### 🔍 **Sensors & Input Devices**  
+### Sensors & Input Devices
 | Component | Model/Type | Interface | Function |
 |-----------|------------|-----------|----------|
 | **Fingerprint Sensor** | AS608/R307 | UART (Serial2) | Biometric Authentication |
@@ -176,7 +176,7 @@ stateDiagram-v2
 | **Reed Switch** | Magnetic Contact | Digital GPIO | Door Position Sensing |
 | **Limit Switches** | Mechanical NO/NC | Digital GPIO | Motor Safety Limits |
 
-### ⚙️ **Actuators & Motor Control**
+### Actuators & Motor Control
 | Component | Specification | Quantity | Application |
 |-----------|---------------|----------|-------------|
 | **Stepper Motors** | NEMA 17, 1.8°/step | 2 | Door & Lock Mechanisms |
@@ -184,14 +184,14 @@ stateDiagram-v2
 | **Solenoid Lock** | 12V, Fail-Secure | 1 | Primary Locking Mechanism |
 | **4-Channel Relay** | 5V Logic, 10A Contact | 1 | Power Switching Control |
 
-### 📱 **Display & Feedback**
+### Display & Feedback
 | Component | Specification | Interface | Purpose |
 |-----------|---------------|-----------|---------|
 | **LCD Display** | 20x4 Character, I2C | I2C Bus | System Status & Messages |
 | **Buzzer** | Piezo, 2-5V | PWM GPIO | Audio Feedback |
 | **LED Strip** | 12V, Addressable | Relay Control | Interior Illumination |
 
-### 🔌 **Power Requirements**
+### Power Requirements
 | System Component | Voltage | Current | Notes |
 |------------------|---------|---------|-------|
 | **ESP32 Controllers** | 5V | 500mA each | Via USB or external supply |
@@ -201,54 +201,371 @@ stateDiagram-v2
 
 ---
 
-## 🔌 Wiring Diagram
+### Component Procurement Guide
 
-### 📊 **System Wiring Overview**
+#### **Microcontrollers & Development Boards**
+| Component | Specifications | Supplier | Approximate Cost | Notes |
+|-----------|---------------|----------|------------------|--------|
+| **ESP32 DevKit V1** | ESP32-WROOM-32, 38-pin | Amazon, AliExpress | $8-15 | Ensure CH340 USB chip |
+| **ESP32 DevKit V4** | ESP32-WROOM-32D, 38-pin | Espressif, DigiKey | $12-20 | Official version |
 
-![Smart Cabinet Wiring Diagram](diagram/img20.jpg)
+#### **Sensors & Input Devices**
+| Component | Model | Specifications | Supplier | Cost |
+|-----------|-------|---------------|----------|------|
+| **Fingerprint Sensor** | AS608 / R307 | UART, 50 templates | Amazon, AliExpress | $15-25 |
+| **PIR Motion Sensor** | HC-SR501 | 3-7m range, 3.3V logic | Amazon, SparkFun | $3-8 |
+| **Reed Switch** | MC-38 | Magnetic, NO contact | Amazon, AliExpress | $2-5 |
+| **Limit Switches** | KW12-3 | Microswitch, NO/NC | Amazon, McMaster | $3-8 each |
+| **Tactile Button** | 12mm | 4-pin, momentary | Amazon, Adafruit | $1-3 |
+
+#### **Motor Control Components**
+| Component | Model | Specifications | Supplier | Cost |
+|-----------|-------|---------------|----------|------|
+| **NEMA 17 Motors** | 17HS4401 | 1.8°, 1.7A, 4-wire | Amazon, StepperOnline | $15-25 each |
+| **TB6600 Drivers** | TB6600HG | 4A, 9-42V, 32μstepping | Amazon, AliExpress | $12-20 each |
+| **4-Channel Relay** | SRD-05VDC-SL-C | 5V coil, 10A contact | Amazon, AliExpress | $8-15 |
+| **Solenoid Lock** | 12V Electric Lock | Fail-secure, 12V DC | Amazon, Security stores | $20-40 |
+
+#### **Display & Interface**
+| Component | Model | Specifications | Supplier | Cost |
+|-----------|-------|---------------|----------|------|
+| **I2C LCD** | 2004A + I2C Module | 20x4, HD44780, 0x27 | Amazon, AliExpress | $8-15 |
+| **DS1302 RTC** | DS1302 Module | Real-time clock, battery | Amazon, AliExpress | $3-8 |
+| **Piezo Buzzer** | Active/Passive | 3-5V, PCB mount | Amazon, DigiKey | $2-5 |
+
+#### **Power Supply Components**
+| Component | Specifications | Supplier | Cost | Notes |
+|-----------|---------------|----------|------|--------|
+| **Switching PSU** | 12V 5A (60W) | Amazon, Mean Well | $15-30 | Choose reputable brand |
+| **Buck Converter** | LM2596 12V→5V 3A | Amazon, AliExpress | $3-8 | Adjustable output |
+| **Power Jack** | 5.5×2.1mm DC Jack | Amazon, DigiKey | $2-5 | Panel mount |
+
+#### **Wiring & Connectors**
+| Item | Specifications | Supplier | Cost | Quantity |
+|------|---------------|----------|------|----------|
+| **Hookup Wire** | 22AWG stranded | Amazon, McMaster | $10-20 | 10m spools |
+| **Power Wire** | 16AWG stranded | Amazon, McMaster | $15-25 | 5m spool |
+| **Dupont Connectors** | 2.54mm pitch | Amazon, AliExpress | $5-10 | 100pc kit |
+| **Terminal Blocks** | 3.5mm pitch | Amazon, Phoenix | $10-20 | Various sizes |
+| **Heat Shrink** | Assorted sizes | Amazon, 3M | $8-15 | Multi-size kit |
+
+### Total Estimated Cost
+| Category | Cost Range |
+|----------|------------|
+| **Controllers & Sensors** | $60-120 |
+| **Motor System** | $80-150 |
+| **Power & Wiring** | $40-80 |
+| **Enclosure & Mechanical** | $50-150 |
+| **Total Project Cost** | **$230-500** |
+
+*Costs vary by supplier, quantity, and quality. Budget for 20% contingency.*
+
+---
+
+## Wiring Diagram
+
+### System Wiring Overview
+
+![Smart Cabinet Wiring Diagram](diagram/Host.png)
 
 *Complete system wiring schematic showing HOST and CLIENT controller connections*
 
-### 🔗 **HOST Controller Connections (ESP32 #1)**
+### Dual-Controller Architecture
 
-| Component | ESP32 Pin | Connection Details |
-|-----------|-----------|-------------------|
-| **I2C LCD** | SDA: 21, SCL: 22 | Standard I2C bus (address 0x27) |
-| **Fingerprint Sensor** | RX2: 16, TX2: 17 | Hardware Serial2 communication |
-| **DS1302 RTC** | CE: 0, CLK: 18, DAT: 5 | SPI-like interface |
-| **Buzzer** | PWM: 25 | LEDC channel 0 for tone generation |
-| **Power** | VIN: 5V, GND: Common | Shared ground with all components |
+The Smart Cabinet system uses a distributed controller architecture with two ESP32 microcontrollers:
 
-### 🔗 **CLIENT Controller Connections (ESP32 #2)**
+- **HOST Controller (ESP32 #1)**: Handles authentication, user interface, and system coordination
+- **CLIENT Controller (ESP32 #2)**: Manages mechanical operations, motor control, and safety systems
 
-| Function | ESP32 Pin | Component | Notes |
-|----------|-----------|-----------|-------|
-| **Motion Sensor** | GPIO 34 | PIR HC-SR501 | Input-only pin, pull-up enabled |
-| **Door Motor** | DIR: 2, STEP: 4, EN: 15 | TB6600 Driver #1 | Enable LOW = active |
-| **Lock Motor** | DIR: 32, STEP: 33, EN: 5 | TB6600 Driver #2 | Enable LOW = active |
-| **Relay Control** | 12, 13, 14, 27 | 4-Channel Module | HIGH = relay active |
-| **Safety Switches** | 35, 36 | Limit Switches | Pull-up enabled, NO contacts |
-| **Reed Switch** | GPIO 39 | Magnetic Contact | Input-only pin |
+Communication between controllers uses **ESP-NOW protocol** for ultra-low latency and reliable peer-to-peer communication.
 
-### ⚡ **Power Distribution**
+---
+
+### HOST Controller Connections (ESP32 #1)
+
+#### Display & User Interface
+| Component | ESP32 Pin | Wire Color | Connection Details | Voltage |
+|-----------|-----------|------------|-------------------|---------|
+| **20x4 I2C LCD** | SDA: 21 | Blue | I2C Data Line | 5V |
+| | SCL: 22 | Yellow | I2C Clock Line | 5V |
+| | VCC | Red | Power Supply | 5V |
+| | GND | Black | Common Ground | GND |
+| | **I2C Address: 0x27** | | *Use I2C scanner if different* | |
+
+#### Authentication System
+| Component | ESP32 Pin | Wire Color | Connection Details | Protocol |
+|-----------|-----------|------------|-------------------|----------|
+| **AS608 Fingerprint Sensor** | TX2: 17 | Green | UART Transmit | Serial2 |
+| | RX2: 16 | White | UART Receive | Serial2 |
+| | VCC | Red | Power Supply | 3.3V |
+| | GND | Black | Common Ground | GND |
+| **Enrollment Button** | GPIO 23 | Orange | Digital Input | Pull-up |
+| | GND | Black | Button Common | GND |
+
+#### Real-Time Clock Module
+| Component | ESP32 Pin | Wire Color | Connection Details | Interface |
+|-----------|-----------|------------|-------------------|-----------|
+| **DS1302 RTC** | CE: 0 | Purple | Chip Enable/Reset | Digital |
+| | CLK: 19 | Gray | Clock Signal | Digital |
+| | DAT: 18 | Brown | Data I/O | Digital |
+| | VCC | Red | Power Supply | 5V |
+| | GND | Black | Common Ground | GND |
+
+#### Audio Feedback
+| Component | ESP32 Pin | Wire Color | Connection Details | Control |
+|-----------|-----------|------------|-------------------|---------|
+| **Piezo Buzzer** | GPIO 5 | Pink | PWM Signal | LEDC Ch.0 |
+| | GND | Black | Common Ground | GND |
+
+#### Power & Communication
+| Connection | ESP32 Pin | Wire Color | Specification | Notes |
+|------------|-----------|------------|---------------|-------|
+| **Power Input** | VIN | Red | 5V DC Input | From buck converter |
+| | GND | Black | Common Ground | Shared with all components |
+| **ESP-NOW** | Built-in WiFi | | 2.4GHz Radio | Peer-to-peer with CLIENT |
+
+---
+
+### CLIENT Controller Connections (ESP32 #2)
+
+#### Motion Detection
+| Component | ESP32 Pin | Wire Color | Connection Details | Type |
+|-----------|-----------|------------|-------------------|------|
+| **PIR Motion Sensor** | GPIO 34 | Orange | Digital Input | Input-only pin |
+| | VCC | Red | Power Supply | 5V |
+| | GND | Black | Common Ground | GND |
+
+#### Motor Control System
+
+**TB6600 Stepper Driver #1 (Door/Drawer Motor):**
+| Function | ESP32 Pin | TB6600 Pin | Wire Color | Purpose |
+|----------|-----------|------------|------------|---------|
+| **Direction** | GPIO 2 | DIR+ | Blue | Rotation direction |
+| **Step Pulse** | GPIO 4 | PUL+ | Green | Step commands |
+| **Enable** | GPIO 15 | ENA+ | White | Driver enable (LOW=active) |
+| **Common** | GND | DIR-, PUL-, ENA- | Black | Signal ground |
+
+**TB6600 Stepper Driver #2 (Lock Mechanism Motor):**
+| Function | ESP32 Pin | TB6600 Pin | Wire Color | Purpose |
+|----------|-----------|------------|------------|---------|
+| **Direction** | GPIO 32 | DIR+ | Yellow | Rotation direction |
+| **Step Pulse** | GPIO 33 | PUL+ | Orange | Step commands |
+| **Enable** | GPIO 5 | ENA+ | Purple | Driver enable (LOW=active) |
+| **Common** | GND | DIR-, PUL-, ENA- | Black | Signal ground |
+
+**TB6600 Power Connections:**
+| Terminal | Connection | Wire Gauge | Voltage | Current |
+|----------|------------|------------|---------|---------|
+| **VCC/VDD** | +12V Power | 16 AWG | 12V DC | 4A Max |
+| **GND** | Power Ground | 16 AWG | GND | Return |
+| **A+, A-** | Motor Phase A | 18 AWG | Motor | 2A |
+| **B+, B-** | Motor Phase B | 18 AWG | Motor | 2A |
+
+#### Relay Control System
+| Relay | ESP32 Pin | Load Connection | Wire Color | Purpose | Max Load |
+|-------|-----------|-----------------|------------|---------|----------|
+| **Relay 1** | GPIO 12 | Solenoid Lock | Red | Primary lock mechanism | 10A @ 250V |
+| **Relay 2** | GPIO 13 | LED Strip | Blue | Interior illumination | 10A @ 250V |
+| **Relay 3** | GPIO 14 | Auxiliary 1 | Green | Future expansion | 10A @ 250V |
+| **Relay 4** | GPIO 27 | Auxiliary 2 | Yellow | Future expansion | 10A @ 250V |
+
+**Relay Module Power:**
+| Terminal | Connection | Wire Color | Voltage |
+|----------|------------|------------|---------|
+| **VCC** | +5V | Red | 5V DC |
+| **GND** | Ground | Black | GND |
+| **JD-VCC** | +5V | Red | Optocoupler power |
+
+#### Safety & Sensors
+| Component | ESP32 Pin | Wire Color | Connection Type | Function |
+|-----------|-----------|------------|-----------------|----------|
+| **Limit Switch MIN** | GPIO 35 | Brown | NO Contact | Minimum position detect |
+| **Limit Switch MAX** | GPIO 36 | Orange | NO Contact | Maximum position detect |
+| **Reed Switch** | GPIO 39 | Purple | Magnetic Contact | Door closed detection |
+| **Common Ground** | GND | Black | Switch Common | All sensor returns |
+
+#### Power & Communication
+| Connection | ESP32 Pin | Wire Color | Specification | Notes |
+|------------|-----------|------------|---------------|-------|
+| **Power Input** | VIN | Red | 5V DC Input | From buck converter |
+| | GND | Black | Common Ground | Shared with all components |
+| **ESP-NOW** | Built-in WiFi | | 2.4GHz Radio | Peer-to-peer with HOST |
+
+---
+
+### Power Distribution System
 
 ```
-Main Power Supply (12V 5A)
-├── TB6600 Motor Drivers (12V 4A)
-├── Solenoid Lock (12V 1A)  
-├── LED Strip (12V 1A)
-└── Buck Converter (12V → 5V 2A)
-    ├── ESP32 Host Controller (5V 500mA)
-    ├── ESP32 Client Controller (5V 500mA)  
-    ├── Sensors & Logic (5V 200mA)
-    └── LCD & Buzzer (5V 100mA)
+ Main Power Supply (12V 5A Switching PSU)
+├──  TB6600 Motor Driver #1 (12V 2A) ──→  NEMA 17 Door Motor
+├──  TB6600 Motor Driver #2 (12V 2A) ──→  NEMA 17 Lock Motor  
+├──  Solenoid Lock (12V 1A) ──→ via Relay 1
+├──  LED Strip (12V 1A) ──→ via Relay 2
+└──  Buck Converter (LM2596) (12V → 5V 3A)
+    ├──  ESP32 Host Controller (5V 500mA)
+    ├──  ESP32 Client Controller (5V 500mA)
+    ├──  20x4 I2C LCD Display (5V 200mA)
+    ├──  AS608 Fingerprint Sensor (3.3V 100mA)
+    ├──  PIR Motion Sensor (5V 50mA)
+    ├──  DS1302 RTC Module (5V 10mA)
+    ├──  Piezo Buzzer (5V 20mA)
+    ├──  4-Channel Relay Module (5V 150mA)
+    └──  Safety Switches & Sensors (5V 50mA)
+```
+
+### Connector & Terminal Specifications
+
+#### Recommended Connectors
+| Connection Type | Connector | Wire Gauge | Rating |
+|-----------------|-----------|------------|--------|
+| **Power (12V)** | Terminal Block | 14-16 AWG | 15A |
+| **Motor Connections** | Terminal Block | 16-18 AWG | 5A |
+| **Signal Wires** | Dupont Connectors | 22-24 AWG | 1A |
+| **Sensor Cables** | JST Connectors | 24-26 AWG | 500mA |
+
+#### Wire Color Standards
+| Function | Color | Purpose |
+|----------|-------|---------|
+| **Power (+)** | Red | Positive voltage |
+| **Ground (-)** | Black | Ground/negative |
+| **Data/Signal** | Various | Digital I/O |
+| **I2C SDA** | Blue | I2C data |
+| **I2C SCL** | Yellow | I2C clock |
+| **UART TX** | Green | Serial transmit |
+| **UART RX** | White | Serial receive |
+
+### Assembly Notes
+
+#### Critical Safety Requirements
+1. **Isolation**: Keep high-voltage (12V motor) and low-voltage (5V logic) circuits separated
+2. **Grounding**: Use common ground point to prevent ground loops
+3. **Fusing**: Install appropriate fuses on 12V power lines
+4. **Strain Relief**: Secure all cables to prevent disconnection during operation
+
+#### Testing Checklist
+- [ ] Verify all power supply voltages before connecting ESP32 controllers
+- [ ] Test continuity of all signal connections
+- [ ] Confirm proper motor driver configuration (current limiting)
+- [ ] Validate safety switch operation (emergency stops)
+- [ ] Check ESP-NOW communication range and reliability
+
+### Advanced Wiring Considerations
+
+#### Electromagnetic Interference (EMI) Mitigation
+
+**Motor Noise Suppression:**
+```
+┌─ Stepper Motor Cable (Shielded)
+├─ Ferrite Core (Split-bead, 10-30MHz)
+├─ Twisted Pair Wiring (A+/A-, B+/B-)
+└─ Shield Connection to Motor Frame Ground
+
+TB6600 Layout:
+- Separate analog/digital grounds
+- Place 0.1μF ceramic caps near logic pins
+- Use 1000μF electrolytic on motor supply
+- Keep switching circuits away from ESP32
+```
+
+**Signal Integrity Protection:**
+```
+Critical Signals (I2C, UART, SPI):
+├─ Use twisted pair or shielded cable <30cm
+├─ Add series resistors (47Ω) for signal damping
+├─ Ground shield at one end only (avoid ground loops)
+└─ Route away from switching power circuits
+
+Digital Input Protection:
+├─ 10kΩ pull-up resistors on all inputs
+├─ 100pF ceramic caps for debouncing
+├─ TVS diodes for ESD protection (optional)
+└─ Optical isolation for noisy environments
+```
+
+#### Professional Installation Practices
+
+**Cable Management:**
+- Use cable trays or conduit for organized routing
+- Maintain 6" separation between power and signal cables
+- Label all cables with wire markers or heat shrink labels
+- Create service loops for future maintenance access
+
+**Grounding Strategy:**
+- Establish single-point ground (star configuration)
+- Use heavy gauge wire (12-14 AWG) for ground bus
+- Connect all metal enclosures to safety ground
+- Install ground fault circuit breaker for AC power
+
+**Environmental Considerations:**
+- IP65 rated enclosures for humid environments
+- Operating temperature: -10°C to +50°C
+- Ventilation for heat dissipation from motor drivers
+- Vibration dampening for stepper motor mounting
+
+#### Safety & Code Compliance
+
+**Electrical Safety:**
+- Install 5A slow-blow fuse on 12V supply
+- Use UL-listed power supplies and enclosures
+- Implement emergency stop (E-stop) button
+- Ground fault protection for wet locations
+
+**Fire Safety:**
+- Use flame-retardant cable jacket materials
+- Install thermal protection on motor drivers
+- Smoke detection in enclosed installations
+- Regular inspection of electrical connections
+
+#### Maintenance & Serviceability
+
+**Test Points & Diagnostics:**
+- Install LED indicators for power rails
+- Add test points for critical signals
+- Include voltage monitoring in software
+- Document all modifications and settings
+
+**Spare Parts & Backup:**
+- Keep spare ESP32 controllers programmed
+- Stock critical sensors (fingerprint, PIR)
+- Backup configuration settings to SD card
+- Create wiring diagram updates for changes**
+
+### Installation Checklist
+
+#### Pre-Installation Verification
+```bash
+□ All components tested individually
+□ Power supply load tested at full current
+□ Cable continuity verified with multimeter
+□ Insulation resistance >1MΩ measured
+□ Grounding system continuity confirmed
+```
+
+#### Installation Steps
+```bash
+□ Mount ESP32 controllers in protective enclosures
+□ Install power distribution (fused and switched)
+□ Route and secure all signal cables
+□ Connect motor drivers and test without motors
+□ Install and calibrate all sensors
+□ Perform full system integration test
+```
+
+#### Commissioning Tests
+```bash
+□ Power-on sequence verification
+□ ESP-NOW communication test
+□ Motor movement and limit switch operation
+□ Fingerprint enrollment and authentication
+□ Emergency stop and safety system test
+□ Long-term reliability test (24-48 hours)
 ```
 
 ---
 
-## ⚙️ Software Dependencies
+## Software Dependencies
 
-### 📚 **Required Arduino Libraries**
+### Required Arduino Libraries
 
 | Library | Version | Repository | Purpose |
 |---------|---------|------------|---------|
@@ -259,7 +576,7 @@ Main Power Supply (12V 5A)
 | **ArduinoJson** | ≥6.21.2 | [bblanchon/ArduinoJson](https://github.com/bblanchon/ArduinoJson) | JSON Message Processing |
 | **WiFi** | Built-in | ESP32 Core | Network Connectivity |
 
-### 🛠️ **Development Environment**
+### Development Environment
 
 | Tool | Version | Download Link |
 |------|---------|---------------|
@@ -267,7 +584,7 @@ Main Power Supply (12V 5A)
 | **ESP32 Board Package** | ≥2.0.9 | [Espressif Arduino Core](https://github.com/espressif/arduino-esp32) |
 | **VS Code** (Optional) | Latest | [PlatformIO Extension](https://platformio.org/platformio-ide) |
 
-### 📥 **Library Installation**
+### Library Installation
 
 **Via Arduino IDE Library Manager:**
 ```cpp
@@ -295,9 +612,9 @@ lib_deps =
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
-### 1️⃣ **Hardware Assembly**
+### Hardware Assembly
 
 1. **Mount Controllers**: Secure both ESP32 boards in protective enclosures
 2. **Connect Power**: Wire 12V supply to motor drivers and buck converter  
@@ -305,7 +622,7 @@ lib_deps =
 4. **Install Motors**: Mount stepper motors for door and lock mechanisms
 5. **Test Connections**: Verify continuity and proper voltage levels
 
-### 2️⃣ **Software Installation**
+### Software Installation
 
 **Clone Repository:**
 ```bash
@@ -323,7 +640,7 @@ cd Smart-Cabinet
 pio lib install
 ```
 
-### 3️⃣ **Upload Firmware**
+### Upload Firmware
 
 **HOST Controller (Authentication Unit):**
 ```bash
@@ -343,7 +660,7 @@ cd source/client/SmartCabinet/
 # Upload via Arduino IDE or PlatformIO to ESP32 #2
 ```
 
-### 4️⃣ **Initial System Verification**
+### Initial System Verification
 
 ```bash
 # Open Serial Monitor for both controllers
@@ -356,9 +673,9 @@ cd source/client/SmartCabinet/
 
 ---
 
-## 📋 Configuration
+## Configuration
 
-### 🌐 **Network Configuration**
+### Network Configuration
 
 **HOST Controller (`source/host/SmartCabinet/pins.h`):**
 ```cpp
@@ -402,7 +719,7 @@ static const unsigned int CLIENT_MOTOR_PULSE_US = 100;         // Pulse width
 static const unsigned int CLIENT_MOTOR_GAP_US = 800;           // Speed control
 ```
 
-### 🔧 **Hardware Calibration**
+### Hardware Calibration
 
 **Motor Step Calculation:**
 ```cpp
@@ -426,9 +743,9 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 
 ---
 
-## 🎮 Operation Guide
+##  Operation Guide
 
-### 🔐 **User Authentication Process**
+### User Authentication Process
 
 1. **Approach Cabinet**: Motion sensor detects user presence
 2. **Fingerprint Scan**: Place enrolled finger on AS608 sensor
@@ -437,11 +754,11 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 5. **Automatic Opening**: Client executes door opening mechanism via ESP-NOW
 
 **Authentication Flow:**
-- ✅ **Success**: LCD shows "Access Granted!" + ascending beeps + door unlocks
-- ❌ **Denied**: LCD shows "Access Denied!" + error beeps (3 short beeps)
-- ⏸️ **No Finger**: Silent operation (no spam messages)
+-  **Success**: LCD shows "Access Granted!" + ascending beeps + door unlocks
+-  **Denied**: LCD shows "Access Denied!" + error beeps (3 short beeps)
+- ⏸ **No Finger**: Silent operation (no spam messages)
 
-### 📝 **Fingerprint Enrollment**
+### Fingerprint Enrollment
 
 **Quick Enrollment Process:**
 
@@ -475,7 +792,7 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 - **Template Storage**: Non-volatile sensor memory
 - **Button Wiring**: GPIO 23 → Button → GND (internal pullup enabled)
 
-### 🔄 **System Operation States**
+### System Operation States
 
 | State | LED Indicator | Buzzer | Description |
 |-------|---------------|---------|-------------|
@@ -486,7 +803,7 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 | **CLOSING** | Blinking | Warning tone | Auto-close sequence active |
 | **ERROR** | Fast blink | Alarm | System fault, manual intervention required |
 
-### ⏰ **Automatic Features**
+###  **Automatic Features**
 
 **Auto-Close System:**
 - **Trigger**: 60 seconds of no motion detected
@@ -501,9 +818,9 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 
 ---
 
-## 🔧 API & Communication
+## API & Communication
 
-### 📡 **ESP-NOW Protocol**
+### ESP-NOW Protocol
 
 **Communication Details:**
 ```cpp
@@ -521,7 +838,7 @@ CLIENT_LOCK_ENGAGE_STEPS = lock_rotation_degrees * steps_per_degree;
 - ✅ Non-blocking operation
 - ✅ Direct peer-to-peer connection
 
-### 📨 **Message Formats**
+### Message Formats
 
 **ESP-NOW Data Structure:**
 ```cpp
@@ -585,7 +902,7 @@ typedef struct {
 }
 ```
 
-### 🚨 **Emergency Commands**
+### Emergency Commands
 
 ```json
 {
@@ -596,7 +913,7 @@ typedef struct {
 }
 ```
 
-### 📊 **Diagnostic Data**
+### Diagnostic Data
 
 ```json
 {
@@ -618,9 +935,9 @@ typedef struct {
 
 ---
 
-## 🧪 Testing & Validation
+## Testing & Validation
 
-### ✅ **Pre-Deployment Testing**
+### Pre-Deployment Testing
 
 **1. Hardware Verification:**
 ```bash
@@ -662,7 +979,7 @@ typedef struct {
 - Position verification accuracy
 ```
 
-### 🔍 **Performance Benchmarks**
+### Performance Benchmarks
 
 | Metric | Target | Typical | Acceptance |
 |--------|---------|---------|------------|
@@ -673,7 +990,7 @@ typedef struct {
 | **WebSocket Latency** | <100ms | 45ms | <200ms |
 | **Emergency Stop** | <50ms | 25ms | <100ms |
 
-### 📋 **Acceptance Testing Checklist**
+### Acceptance Testing Checklist
 
 - [ ] **Power-on self-test passes**
 - [ ] **All sensors respond correctly** 
@@ -688,11 +1005,143 @@ typedef struct {
 
 ---
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
-### ⚠️ **Common Issues & Solutions**
+### Wiring & Hardware Troubleshooting
 
-#### 🔌 **Power & Connectivity Issues**
+#### Step-by-Step Connection Verification
+
+**1. Power System Check:**
+```bash
+□ Main 12V supply: 11.5V - 12.5V (use multimeter)
+□ Buck converter output: 4.9V - 5.1V  
+□ ESP32 3.3V rail: 3.2V - 3.4V
+□ All ground connections secure and continuous
+□ No short circuits between power rails
+```
+
+**2. HOST Controller Verification:**
+```bash
+□ I2C LCD: SDA=21, SCL=22, Address 0x27
+□ AS608 Sensor: TX2=17, RX2=16, 3.3V power
+□ DS1302 RTC: CE=0, CLK=19, DAT=18, 5V power  
+□ Buzzer: GPIO 5, active high
+□ Enrollment Button: GPIO 23, pull-up enabled
+```
+
+**3. CLIENT Controller Verification:**  
+```bash
+□ PIR Sensor: GPIO 34 (input-only), 5V power
+□ TB6600 #1: DIR=2, STEP=4, ENABLE=15
+□ TB6600 #2: DIR=32, STEP=33, ENABLE=5
+□ Relays: GPIO 12,13,14,27 (HIGH = active)
+□ Limit Switches: GPIO 35,36 (pull-up, NO contacts)
+□ Reed Switch: GPIO 39 (input-only, magnetic)
+```
+
+**4. Communication Test:**
+```bash
+Serial Monitor Commands:
+HOST: "ESP-NOW: Host initialized"
+CLIENT: "ESP-NOW: Client paired"
+Both: "WiFi connected" (if using WiFi features)
+```
+
+#### Common Wiring Problems
+
+**Issue: I2C LCD Not Working**
+```bash
+Symptoms: Blank display, garbled text, no backlight
+Troubleshooting:
+□ Verify I2C address with scanner: Wire.begin(); Wire.scan()
+□ Check SDA/SCL connections (GPIO 21/22)
+□ Test with 3.3V instead of 5V (some modules require 3.3V)
+□ Ensure pull-up resistors present (usually on module)
+Solutions:
+- Try different I2C address (0x3F common alternative)
+- Swap SDA/SCL if communication fails
+- Add external 4.7kΩ pull-up resistors if needed
+```
+
+**Issue: Stepper Motors Erratic/Not Moving**
+```bash
+Symptoms: Jittery movement, wrong direction, no movement
+Troubleshooting:
+□ Check TB6600 DIP switch settings (current, decay mode)
+□ Verify motor wiring: A+,A-,B+,B- to driver
+□ Measure STEP signal: should show 3.3V pulses
+□ Test ENABLE pin: LOW=enabled, HIGH=disabled
+Solutions:
+- Set TB6600 current to 1.5A (switches 5,6,7 = OFF,ON,OFF)
+- Swap motor phase wires if direction incorrect
+- Check step pulse timing (minimum 2.5μs pulse width)
+```
+
+**Issue: Fingerprint Sensor Communication Error**
+```bash
+Symptoms: "Sensor not found", incorrect readings
+Troubleshooting:
+□ Verify power: 3.3V (NOT 5V - can damage sensor)
+□ Check UART wiring: ESP32 TX2→Sensor RX, ESP32 RX2→Sensor TX
+□ Test baud rate: default 57600, try 9600 if issues
+□ Ensure common ground connection
+Solutions:
+- Use voltage divider if accidentally connected to 5V
+- Try hardware serial pins 1,3 instead of 16,17
+- Reset sensor by power cycling
+```
+
+**Issue: ESP-NOW Communication Failed**
+```bash
+Symptoms: Controllers not communicating, timeout errors
+Troubleshooting:
+□ Both ESP32s on same WiFi channel
+□ MAC addresses correctly configured
+□ Distance <50 meters, clear line of sight
+□ No interference from other 2.4GHz devices
+Solutions:
+- Scan and print MAC addresses: WiFi.macAddress()
+- Force same WiFi channel with WiFi.channel()
+- Use external antennas for better range
+```
+
+**Issue: Safety Switches Not Working**
+```bash
+Symptoms: Limit switches ignored, motors don't stop
+Troubleshooting:
+□ Check switch type: NO (Normally Open) required
+□ Verify pull-up resistors enabled in code
+□ Test switch continuity with multimeter
+□ Ensure GPIO pins not shared with other functions
+Solutions:
+- Add external 10kΩ pull-up resistors
+- Use interrupt-driven detection for faster response
+- Test with LED to verify switch operation
+```
+
+#### Wiring Best Practices
+
+**Signal Integrity:**
+- Keep motor power wires away from signal wires (>2cm separation)
+- Use twisted pairs for stepper motor connections
+- Add ferrite cores on motor cables to reduce EMI
+- Shield sensitive analog signals (if any added later)
+
+**Power Distribution:**
+- Use star grounding (single ground point) to prevent ground loops
+- Add 100μF capacitors near each ESP32 for power stability  
+- Install 1000μF capacitor on 12V rail for motor current spikes
+- Use adequate wire gauge: 16AWG for 12V, 22AWG for 5V signals
+
+**Connector Reliability:**
+- Solder all permanent connections (avoid breadboards)
+- Use screw terminals for high-current connections (>1A)
+- Apply heat shrink tubing to all solder joints
+- Label all wires with wire markers or heat-shrink labels
+
+### Common Issues & Solutions
+
+#### Power & Connectivity Issues
 
 **Problem: ESP32 Controller Not Starting**
 ```bash
@@ -720,7 +1169,7 @@ Solutions:
   - Use 2.4GHz network (ESP32 limitation)
 ```
 
-#### 🤖 **Motor & Mechanical Issues**
+#### Motor & Mechanical Issues
 
 **Problem: Stepper Motors Not Moving**
 ```bash
@@ -748,7 +1197,7 @@ Solutions:
   - Lubricate door mechanism
 ```
 
-#### 🔍 **Sensor & Detection Issues**
+#### Sensor & Detection Issues
 
 **Problem: Fingerprint Sensor Not Responding**
 ```bash
@@ -776,7 +1225,7 @@ Solutions:
   - Increase debounce time in software
 ```
 
-#### 🌐 **Communication Issues**
+#### Communication Issues
 
 **Problem: WebSocket Connection Drops**
 ```bash
@@ -791,9 +1240,9 @@ Solutions:
   - Use static IP assignment for stability
 ```
 
-### 🔧 **Diagnostic Tools**
+### Diagnostic Tools
 
-#### 📊 **Serial Monitor Commands**
+#### Serial Monitor Commands
 ```cpp
 // Add to main loop for debugging:
 if (Serial.available()) {
@@ -806,7 +1255,7 @@ if (Serial.available()) {
 }
 ```
 
-#### 🛠️ **Hardware Testing Procedures**
+#### Hardware Testing Procedures
 
 **Voltage Testing Points:**
 ```bash
@@ -851,7 +1300,7 @@ If you encounter issues not covered here:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Smart-Cabinet/
@@ -890,7 +1339,7 @@ Smart-Cabinet/
 └── LICENSE                                # Project license file
 ```
 
-### 🏗️ **Architecture Overview**
+### Architecture Overview
 
 **HOST Controller Components:**
 - `SmartCabinet.ino`: Main application logic and state management
@@ -909,7 +1358,7 @@ Smart-Cabinet/
 - `ReedSwitch.*`: Magnetic door position sensing
 - `WebSocketClient.*`: Network communication with auto-reconnection
 
-### 🎯 **Component Responsibilities**
+### Component Responsibilities
 
 | Component | Primary Function | Secondary Function |
 |-----------|------------------|-------------------|
@@ -921,39 +1370,39 @@ Smart-Cabinet/
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
-### 📱 **Mobile Application Integration**
+### Mobile Application Integration
 - **Native App Development**: iOS/Android companion app for remote monitoring
 - **Push Notifications**: Real-time alerts for security events and system status
 - **Remote Control**: Emergency unlock and system management capabilities
 - **User Management**: Fingerprint enrollment and access control via mobile interface
 
-### 🤖 **Advanced AI Features**
+### Advanced AI Features
 - **Behavioral Analytics**: Machine learning-based user pattern recognition
 - **Predictive Maintenance**: AI-driven component health monitoring and failure prediction
 - **Adaptive Security**: Dynamic access control based on time, location, and user behavior
 - **Voice Control**: Integration with voice assistants for hands-free operation
 
-### 🔒 **Enhanced Security Systems**
+### Enhanced Security Systems
 - **Multi-Factor Authentication**: Combination of fingerprint, RFID, and PIN verification
 - **Facial Recognition**: Computer vision-based secondary authentication
 - **Tamper Detection**: Advanced intrusion detection with immediate alert systems
 - **Encrypted Communication**: End-to-end encryption for all network communications
 
-### 🌐 **IoT Ecosystem Integration**
+### IoT Ecosystem Integration
 - **Home Automation**: Integration with existing smart home platforms (Home Assistant, OpenHAB)
 - **Cloud Connectivity**: Secure cloud backup and remote access capabilities
 - **API Gateway**: RESTful API for third-party system integration
 - **Dashboard Interface**: Web-based management interface for system administration
 
-### ⚡ **Performance Optimizations**
+### Performance Optimizations
 - **Edge Computing**: Local AI processing for faster response times
 - **Energy Management**: Advanced power saving modes and solar charging compatibility
 - **Wireless Charging**: Contactless power delivery for maintenance-free operation
 - **Mesh Networking**: Multi-device communication for scaled deployments
 
-### 🎨 **User Experience Improvements**
+### User Experience Improvements
 - **Customizable Interface**: Themeable LCD displays and configurable audio feedback
 - **Multi-Language Support**: Internationalization for global deployment
 - **Accessibility Features**: Voice prompts and tactile feedback for visually impaired users
@@ -961,11 +1410,11 @@ Smart-Cabinet/
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from the community! Here's how you can help improve the Smart Cabinet System:
 
-### 🛠️ **Development Setup**
+### Development Setup
 
 1. **Fork the Repository**
    ```bash
@@ -990,7 +1439,7 @@ We welcome contributions from the community! Here's how you can help improve the
    - Basic multimeter for voltage verification
    ```
 
-### 📝 **Contribution Guidelines**
+### Contribution Guidelines
 
 **Code Standards:**
 - Follow Arduino/C++ naming conventions
@@ -1010,7 +1459,7 @@ We welcome contributions from the community! Here's how you can help improve the
 - Include performance benchmarks for optimizations
 - Document any breaking changes
 
-### 🎯 **Priority Areas for Contribution**
+### Priority Areas for Contribution
 
 1. **Hardware Drivers**: New sensor and actuator support
 2. **Communication Protocols**: Additional network interfaces
@@ -1019,7 +1468,7 @@ We welcome contributions from the community! Here's how you can help improve the
 5. **Documentation**: Installation guides and troubleshooting
 6. **Testing**: Automated testing frameworks and validation scripts
 
-### 📋 **Submission Process**
+### Submission Process
 
 1. **Create Feature Branch**: Use descriptive branch names
 2. **Implement Changes**: Follow coding standards and add tests
@@ -1030,39 +1479,39 @@ We welcome contributions from the community! Here's how you can help improve the
 
 ---
 
-## 📞 Support & Contact
+## Support & Contact
 
-### 👨‍💻 **Project Maintainer**
+### Project Maintainer
 
 **QPPD (Sajed Mendoza)**
-- 🌐 **Portfolio**: [sajed-mendoza.onrender.com](https://sajed-mendoza.onrender.com)
-- 🐙 **GitHub**: [@qppd](https://github.com/qppd)  
-- 📧 **Email**: quezon.province.pd@gmail.com
+- Portfolio: [sajed-mendoza.onrender.com](https://sajed-mendoza.onrender.com)
+- GitHub: [@qppd](https://github.com/qppd)
+- Email: quezon.province.pd@gmail.com
 
-### 🌐 **Community & Social**
+### Community & Social
 
-- 📘 **Facebook Developer Page**: [QPPD Dev](https://facebook.com/qppd.dev)
-- 🏢 **Organization**: [Quezon Province Programmer/Developers](https://facebook.com/QUEZONPROVINCEDEVS)  
+- Facebook Developer Page: [QPPD Dev](https://facebook.com/qppd.dev)
+- Organization: [Quezon Province Programmer/Developers](https://facebook.com/QUEZONPROVINCEDEVS)
 
-### 🛠️ **Technical Support**
+### Technical Support
 
-**For Technical Issues:**
+For Technical Issues:
 1. **Search Existing Issues**: Check [GitHub Issues](https://github.com/qppd/Smart-Cabinet/issues)
 2. **Create New Issue**: Use provided templates for bug reports or feature requests
 3. **Include Information**: Hardware setup, error messages, and reproduction steps
 4. **Response Time**: 24-48 hours for initial response
 
-**For General Questions:**
+For General Questions:
 - **Email Support**: Include "Smart Cabinet" in subject line
 - **Community Forum**: Post in Facebook developer group
 - **Live Chat**: Available on portfolio website during business hours
 
-### 📚 **Additional Resources**
-- 🔧 **3D Models**: [Printable enclosures and mounting brackets](https://github.com/qppd/Smart-Cabinet/tree/main/model)
+### Additional Resources
+- 3D Models: [Printable enclosures and mounting brackets](https://github.com/qppd/Smart-Cabinet/tree/main/model)
 
-## 📄 License
+## License
 
-### 📋 **MIT License**
+### MIT License
 
 ```
 MIT License
@@ -1088,21 +1537,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### ⚖️ **License Terms**
+### License Terms
 
-**✅ Permissions:**
-- ✅ **Modification**: Customize and extend functionality  
-- ✅ **Distribution**: Share modified versions with others
-- ✅ **Private Use**: Use for personal projects and learning
+**Permissions:**
+- Modification: Customize and extend functionality
+- Distribution: Share modified versions with others
+- Private Use: Use for personal projects and learning
 
-**📋 Conditions:**
-- 📋 **License Notice**: Include original license in distributions
-- 📋 **Copyright Notice**: Credit original author in derivative works
+**Conditions:**
+- License Notice: Include original license in distributions
+- Copyright Notice: Credit original author in derivative works
 
-**❌ Limitations:**
-- ❌ **Warranty**: Software provided "as-is" without guarantees
+**Limitations:**
+- Warranty: Software provided "as-is" without guarantees
 
-### 🎓 **Educational Use**
+### Educational Use
 
 This project is specifically designed to be educational and learning-friendly:
 
@@ -1111,7 +1560,7 @@ This project is specifically designed to be educational and learning-friendly:
 - **Maker Spaces**: Support community workshops and maker initiatives
 - **Open Source**: Promote collaborative development and knowledge sharing
 
-### 🏢 **Commercial Licensing**
+### Commercial Licensing
 
 For commercial deployments requiring additional support or custom licensing:
 
@@ -1124,16 +1573,12 @@ For commercial deployments requiring additional support or custom licensing:
 
 <div align="center">
 
-### 🌟 **Thank you for choosing Smart Cabinet System!**
+### Thank you for choosing Smart Cabinet System!
 
 *Building the future of secure, intelligent storage solutions.*
 
-**⭐ Star this repository if it helped you! ⭐**
+**Star this repository if it helped you!**
 
-[![GitHub Stars](https://img.shields.io/github/stars/qppd/Smart-Cabinet?style=social)](https://github.com/qppd/Smart-Cabinet/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/qppd/Smart-Cabinet?style=social)](https://github.com/qppd/Smart-Cabinet/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/qppd/Smart-Cabinet)](https://github.com/qppd/Smart-Cabinet/issues)
 
-**Made with ❤️ in the Philippines**
 
 </div>
