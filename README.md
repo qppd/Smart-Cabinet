@@ -201,6 +201,33 @@ stateDiagram-v2
 
 ---
 
+### 3D Printed Enclosures
+
+Custom-designed 3D printable components for professional installation and sensor protection.
+
+#### Fingerprint Scanner Components
+| Component | File Format | Purpose | Print Time | Material |
+|-----------|-------------|---------|------------|----------|
+| **Scanner Case** | STL + G-code | AS608/R307 protective enclosure | 2-3 hours | PLA/PETG |
+| **Mounting Bracket** | STL + G-code | Secure cabinet attachment | 1-2 hours | PLA/PETG |
+
+**Features:**
+- Snap-fit design for easy sensor installation
+- Integrated wire management channels
+- Professional appearance for user-facing installation
+- Pre-sliced G-code available for Creality Ender 3 V3 SE
+
+**Printing Specifications:**
+- **Layer Height:** 0.2mm recommended
+- **Infill Density:** 20-30% for optimal strength-to-weight ratio
+- **Support Material:** Required for overhangs (auto-generated in slicer)
+- **Nozzle Temperature:** PLA: 200-210°C, PETG: 230-250°C
+- **Bed Temperature:** PLA: 60°C, PETG: 80°C
+
+**Files Location:** All STL and G-code files available in [`model/`](https://github.com/qppd/Smart-Cabinet/tree/main/model) directory
+
+---
+
 ### Component Procurement Guide
 
 #### **Microcontrollers & Development Boards**
@@ -616,11 +643,49 @@ lib_deps =
 
 ### Hardware Assembly
 
-1. **Mount Controllers**: Secure both ESP32 boards in protective enclosures
-2. **Connect Power**: Wire 12V supply to motor drivers and buck converter  
-3. **Wire Sensors**: Follow pin configuration tables for all connections
-4. **Install Motors**: Mount stepper motors for door and lock mechanisms
-5. **Test Connections**: Verify continuity and proper voltage levels
+#### 1. 3D Print Components (If Using Custom Enclosures)
+
+**Print the Scanner Components:**
+```bash
+Option A: Use Pre-sliced G-code (Creality Ender 3 V3 SE)
+  - Load CE3V3SE_Cabinet_Scanner_Case.gcode
+  - Load CE3V3SE_Cabinet_Scanner_Case_Mount.gcode
+  - Print with PLA or PETG filament
+
+Option B: Slice STL Files (Any 3D Printer)
+  - Import Cabinet_Scanner_Case.stl into your slicer
+  - Import Cabinet_Scanner_Case_Mount.stl into your slicer
+  - Configure settings: 0.2mm layer height, 20-30% infill
+  - Generate and print G-code
+```
+
+**Assembly Instructions:**
+- Allow printed parts to cool completely before handling
+- Test-fit AS608/R307 sensor in scanner case before final assembly
+- Clean any support material or stringing from prints
+- Optional: Sand and paint for professional finish
+
+#### 2. Mount Controllers and Sensors
+
+1. **Install Fingerprint Scanner**: 
+   - Insert AS608 sensor into printed scanner case
+   - Secure with snap-fit mechanism or adhesive
+   - Attach mounting bracket to cabinet using screws
+   - Position at comfortable height for user access (typically 120-150cm)
+
+2. **Mount ESP32 Controllers**: Secure both boards in protective enclosures or chassis
+
+3. **Install Mechanical Components**:
+   - Mount stepper motors for door and lock mechanisms
+   - Position PIR motion sensor for optimal coverage
+   - Install limit switches at mechanical endpoints
+
+#### 3. Power and Wiring
+
+1. **Connect Power**: Wire 12V supply to motor drivers and buck converter  
+2. **Wire Sensors**: Follow pin configuration tables for all connections
+3. **Cable Management**: Use wire channels in 3D printed parts for clean routing
+4. **Test Connections**: Verify continuity and proper voltage levels
 
 ### Software Installation
 
@@ -1330,8 +1395,11 @@ Smart-Cabinet/
 │
 ├── 📁 model/                              # Design & 3D Models
 │   ├── Cabinet_Scanner_Case.png           # Scanner case design preview
-│   ├── Cabinet_Scanner_Case.stl           # 3D printable scanner enclosure
-│   ├── CE3V3SE_Cabinet_Scanner_Case.gcode # Ready-to-print G-code (Creality Ender 3 V3 SE)
+│   ├── Cabinet_Scanner_Case.stl           # 3D printable fingerprint scanner enclosure
+│   ├── Cabinet_Scanner_Case_Mount.png     # Scanner mount design preview
+│   ├── Cabinet_Scanner_Case_Mount.stl     # 3D printable mounting bracket
+│   ├── CE3V3SE_Cabinet_Scanner_Case.gcode # Ready-to-print scanner case (Creality Ender 3 V3 SE)
+│   ├── CE3V3SE_Cabinet_Scanner_Case_Mount.gcode # Ready-to-print mount (Creality Ender 3 V3 SE)
 │   ├── SmartCabinet v0.png                # Initial concept design
 │   ├── SmartCabinet v03.png               # Design iteration 3
 │   └── SmartCabinet v4.png                # Final design version
@@ -1508,9 +1576,48 @@ For General Questions:
 - **Live Chat**: Available on portfolio website during business hours
 
 ### Additional Resources
-- 3D Models: [Printable enclosures and mounting brackets](https://github.com/qppd/Smart-Cabinet/tree/main/model)
-  - Cabinet Scanner Case (STL + G-code for Creality Ender 3 V3 SE)
-  - Design iterations and concept images
+
+#### 3D Printable Components
+
+All 3D models are available in the [model directory](https://github.com/qppd/Smart-Cabinet/tree/main/model) with ready-to-print files.
+
+**Fingerprint Scanner Enclosure:**
+- **Files Available:**
+  - `Cabinet_Scanner_Case.stl` - 3D model for any slicer software
+  - `Cabinet_Scanner_Case.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Scanner_Case.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  
+- **Purpose:** Protective enclosure for AS608/R307 fingerprint sensor
+- **Features:**
+  - Secure sensor mounting with snap-fit design
+  - Wire management channels for clean installation
+  - Professional appearance for cabinet integration
+  - Compatible with standard fingerprint sensor modules
+
+**Scanner Mounting Bracket:**
+- **Files Available:**
+  - `Cabinet_Scanner_Case_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Scanner_Case_Mount.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Scanner_Case_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  
+- **Purpose:** Secure mounting bracket for scanner case attachment
+- **Features:**
+  - Adjustable positioning for optimal finger placement
+  - Screw mounting points for permanent installation
+  - Compatible with various cabinet materials
+  - Lightweight yet sturdy construction
+
+**Printing Recommendations:**
+- **Material:** PLA or PETG recommended
+- **Layer Height:** 0.2mm for optimal detail
+- **Infill:** 20-30% for structural integrity
+- **Supports:** May be required depending on orientation
+- **Print Time:** Scanner case ~2-3 hours, mount ~1-2 hours
+
+**Design Iterations:**
+- `SmartCabinet v0.png` - Initial concept and planning
+- `SmartCabinet v03.png` - Refined design with improvements
+- `SmartCabinet v4.png` - Final production-ready design
 
 ## License
 
