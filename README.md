@@ -1329,9 +1329,10 @@ Smart-Cabinet/
 │   └── img20.jpg                          # Complete wiring diagram
 │
 ├── 📁 model/                              # Design & 3D Models
-│   ├── Sample.jpg                         # Project showcase image
+│   ├── Cabinet_Scanner_Case.png           # Scanner case design preview
+│   ├── Cabinet_Scanner_Case.stl           # 3D printable scanner enclosure
+│   ├── CE3V3SE_Cabinet_Scanner_Case.gcode # Ready-to-print G-code (Creality Ender 3 V3 SE)
 │   ├── SmartCabinet v0.png                # Initial concept design
-│   ├── SmartCabinet v01.png               # Design iteration 1
 │   ├── SmartCabinet v03.png               # Design iteration 3
 │   └── SmartCabinet v4.png                # Final design version
 │
@@ -1508,6 +1509,8 @@ For General Questions:
 
 ### Additional Resources
 - 3D Models: [Printable enclosures and mounting brackets](https://github.com/qppd/Smart-Cabinet/tree/main/model)
+  - Cabinet Scanner Case (STL + G-code for Creality Ender 3 V3 SE)
+  - Design iterations and concept images
 
 ## License
 
