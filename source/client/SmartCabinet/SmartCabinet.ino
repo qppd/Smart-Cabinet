@@ -48,8 +48,8 @@ TB6600 lockMotor(CLIENT_TB2_DIR, CLIENT_TB2_STEP, CLIENT_TB2_ENABLE);
 // Relay control (only relay 1 on pin 13)
 Relay4 relayBoard(13, CLIENT_RELAY2_PIN, CLIENT_RELAY3_PIN, CLIENT_RELAY4_PIN);
 
-// Safety switches (only one limit switch on pin 35)
-LimitSwitch limitSwitch(35);
+// Safety switches (only one limit switch on pin 5)
+LimitSwitch limitSwitch(5);
 ReedSwitch reedSwitch(CLIENT_REED_SWITCH_PIN);
 
 // Network communication
@@ -430,7 +430,9 @@ void handleErrorState() {
   stopAllMotors();
   relayBoard.allOff();
   
-  // Flash LED strip as error indicator
+  // LED flashing disabled to prevent relay clicking
+  // Uncomment below if you want visual error indication
+  /*
   static unsigned long lastFlash = 0;
   static bool ledState = false;
   
@@ -439,6 +441,7 @@ void handleErrorState() {
     relayBoard.set(2, ledState);
     lastFlash = millis();
   }
+  */
   
   // System requires manual reset or host command to clear error
 }
@@ -620,6 +623,8 @@ void handleSerialCommands() {
       testMotor(2);
     } else if (command == "test_limit") {
       testLimitSwitch();
+    } else if (command == "test_motor_limit") {
+      testMotorWithLimitSwitch();
     } else if (command == "test_motion") {
       testMotionSensor();
     } else if (command == "test_reed") {
@@ -639,13 +644,14 @@ void printTestHelp() {
   Serial.println("╚════════════════════════════════════════════════════════════╝");
   Serial.println();
   Serial.println("Available test commands:");
-  Serial.println("  test_relay    - Test relay 1 (Pin 13) - ON/OFF sequence");
-  Serial.println("  test_motor1   - Test Motor 1 (Door Motor) - 2s CW, 2s CCW");
-  Serial.println("  test_motor2   - Test Motor 2 (Lock Motor) - 2s CW, 2s CCW");
-  Serial.println("  test_limit    - Test limit switch (Pin 35) - press 3x to pass");
-  Serial.println("  test_motion   - Test motion sensor (trigger to pass)");
-  Serial.println("  test_reed     - Test reed switch (trigger to pass)");
-  Serial.println("  help          - Show this help message");
+  Serial.println("  test_relay       - Test relay 1 (Pin 13) - ON/OFF sequence");
+  Serial.println("  test_motor1      - Test Motor 1 (Door Motor) - 2s CW, 2s CCW");
+  Serial.println("  test_motor2      - Test Motor 2 (Lock Motor) - 2s CW, 2s CCW");
+  Serial.println("  test_limit       - Test limit switch (Pin 5) - press 3x to pass");
+  Serial.println("  test_motor_limit - Motor 1 runs until limit switch pressed");
+  Serial.println("  test_motion      - Test motion sensor (trigger to pass)");
+  Serial.println("  test_reed        - Test reed switch (trigger to pass)");
+  Serial.println("  help             - Show this help message");
   Serial.println();
   Serial.println("════════════════════════════════════════════════════════════");
   Serial.println();
@@ -744,11 +750,36 @@ void testLimitSwitch() {
   Serial.println("[TEST] Limit Switch wiring: COM-NO (Normally Open)");
   Serial.println("[TEST] NOT pressed = No continuity (HIGH)");
   Serial.println("[TEST] PRESSED = Continuity (LOW)");
-  Serial.println("[TEST] Pin: 35");
+  Serial.println("[TEST] Pin: 5 (INPUT_PULLUP)");
+  Serial.println();
+  
+  // Show initial raw pin reading
+  int rawValue = digitalRead(5);
+  Serial.print("[TEST] Initial raw pin value: ");
+  Serial.print(rawValue);
+  Serial.print(" (");
+  Serial.print(rawValue == HIGH ? "HIGH" : "LOW");
+  Serial.println(")");
+  
+  limitSwitch.update();
+  bool initialState = limitSwitch.isPressed();
+  Serial.print("[TEST] Initial switch state: ");
+  Serial.println(initialState ? "PRESSED" : "NOT PRESSED");
+  
+  if (initialState) {
+    Serial.println();
+    Serial.println("[WARNING] Limit switch reads as PRESSED at startup!");
+    Serial.println("[WARNING] Possible causes:");
+    Serial.println("  - Switch is actually pressed/stuck");
+    Serial.println("  - Loose wire causing short circuit");
+    Serial.println("  - Wrong wiring (check COM and NO connections)");
+    Serial.println();
+  }
+  
   Serial.println();
   
   // Test Limit Switch
-  Serial.println("[TEST] Testing Limit Switch (Pin 35)...");
+  Serial.println("[TEST] Testing Limit Switch (Pin 5)...");
   Serial.println("[TEST] Please press the limit switch (3 times)");
   int pressCount = 0;
   bool lastState = false;
@@ -925,6 +956,94 @@ void testReedSwitch() {
   } else {
     Serial.println("┌────────────────────────────────────────┐");
     Serial.println("│   REED SWITCH TEST FAILED - TIMEOUT    │");
+    Serial.println("└────────────────────────────────────────┘");
+  }
+  Serial.println();
+}
+
+void testMotorWithLimitSwitch() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│   MOTOR + LIMIT SWITCH TEST STARTED    │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  Serial.println("[TEST] This test runs Motor 1 until limit switch is pressed");
+  Serial.println("[TEST] Motor will run in CW direction");
+  Serial.println("[TEST] Press the limit switch to stop the motor");
+  Serial.println();
+  
+  // Wait for user to be ready
+  Serial.println("[TEST] Starting in 3 seconds...");
+  delay(1000);
+  Serial.println("[TEST] 2...");
+  delay(1000);
+  Serial.println("[TEST] 1...");
+  delay(1000);
+  Serial.println();
+  
+  Serial.println("[TEST] ✓ MOTOR STARTING - Press limit switch to stop!");
+  Serial.println();
+  
+  // Enable motor
+  doorMotor.enable(true);
+  doorMotor.setDirection(true); // CW direction
+  
+  bool limitPressed = false;
+  unsigned long stepCount = 0;
+  unsigned long startTime = millis();
+  unsigned long maxRunTime = 30000; // 30 second safety timeout
+  
+  // Run motor until limit switch is pressed or timeout
+  while (!limitPressed && (millis() - startTime < maxRunTime)) {
+    // Update limit switch state
+    limitSwitch.update();
+    
+    // Check if limit switch is pressed
+    if (limitSwitch.isPressed()) {
+      limitPressed = true;
+      Serial.println();
+      Serial.println("[TEST] ✓✓✓ LIMIT SWITCH PRESSED! ✓✓✓");
+      Serial.println("[TEST] Motor stopping...");
+      break;
+    }
+    
+    // Step the motor
+    doorMotor.stepOnce(CLIENT_MOTOR_PULSE_US);
+    delayMicroseconds(CLIENT_MOTOR_GAP_US);
+    stepCount++;
+    
+    // Print status every 1000 steps
+    if (stepCount % 1000 == 0) {
+      Serial.print("[TEST] Motor running... Steps: ");
+      Serial.print(stepCount);
+      Serial.print(" | Time: ");
+      Serial.print((millis() - startTime) / 1000);
+      Serial.println("s");
+    }
+  }
+  
+  // Disable motor
+  doorMotor.enable(false);
+  
+  unsigned long totalTime = millis() - startTime;
+  
+  Serial.println();
+  Serial.println("[TEST] Motor stopped");
+  Serial.print("[TEST] Total steps: ");
+  Serial.println(stepCount);
+  Serial.print("[TEST] Total time: ");
+  Serial.print(totalTime / 1000.0, 2);
+  Serial.println(" seconds");
+  Serial.println();
+  
+  if (limitPressed) {
+    Serial.println("┌────────────────────────────────────────┐");
+    Serial.println("│ MOTOR+LIMIT TEST COMPLETED - SUCCESS ✓│");
+    Serial.println("└────────────────────────────────────────┘");
+  } else {
+    Serial.println("┌────────────────────────────────────────┐");
+    Serial.println("│  MOTOR+LIMIT TEST FAILED - TIMEOUT    │");
+    Serial.println("│  (Limit switch was not pressed)       │");
     Serial.println("└────────────────────────────────────────┘");
   }
   Serial.println();

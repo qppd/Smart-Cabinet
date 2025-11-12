@@ -343,12 +343,16 @@ The system includes a comprehensive serial command testing interface accessible 
 - **Status**: ✅ OPERATIONAL - Reliable switching confirmed
 
 #### **Limit Switch** - TESTED & WORKING
-- **Configuration**: COM-NO (Normally Open) wiring on Pin 35
+- **Configuration**: COM-NO (Normally Open) wiring on Pin 5
+- **Pin Mode**: INPUT_PULLUP
 - **Behavior**: Continuity when pressed, open circuit when released
-- **Test Command**: `test_limit`
-- **Test Results**: Successfully detects 3 consecutive press events with debouncing
-- **Application**: Emergency stop, motor homing, position limits
+- **Test Commands**: 
+  - `test_limit` - Press detection test (3 presses required)
+  - `test_motor_limit` - Motor runs until limit switch is pressed
+- **Test Results**: Successfully detects press events with debouncing, stops motor on activation
+- **Application**: Emergency stop, motor homing, position limits, travel range detection
 - **Status**: ✅ OPERATIONAL - Accurate press detection with proper debouncing
+- **Note**: Pin 35 was not stable; moved to pin 5 for reliable operation
 
 ### Components Pending Testing
 
