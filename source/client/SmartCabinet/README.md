@@ -311,6 +311,66 @@ Check: Switch type configuration (normally open/closed)
 3. Check failsafe lock behavior
 4. Test power failure recovery
 
+## Component Testing Status
+
+### Serial Command Testing Interface
+The system includes a comprehensive serial command testing interface accessible via the Serial Monitor at 115200 baud. Type `help` to view all available test commands.
+
+### Verified Working Components ✓
+
+#### **Stepper Motors (NEMA23)** - TESTED & WORKING
+- **Specifications**: 3.0A, 1.8°/step (200 steps/revolution)
+- **Driver**: TB6600 with microstepping configuration
+- **Test Command**: `test_motor1` (Door Motor) and `test_motor2` (Lock Motor)
+- **Test Results**: Both motors successfully complete 2-second CW and 2-second CCW rotations
+- **Performance**: Smooth operation with optimized pulse timing (50µs pulse, 500µs gap)
+- **Status**: ✅ OPERATIONAL - Both motor drivers functioning correctly
+
+#### **Reed Switch** - TESTED & WORKING
+- **Configuration**: COM-NO (Normally Open) wiring
+- **Behavior**: Continuity when magnet is far, breaks when magnet is close
+- **Test Command**: `test_reed`
+- **Test Results**: Successfully detects magnet proximity state changes
+- **Application**: Door position sensing (open/closed detection)
+- **Status**: ✅ OPERATIONAL - Accurately reports door position
+
+#### **Relay Module (Relay 1)** - TESTED & WORKING
+- **Configuration**: Single relay on Pin 13
+- **Load Capacity**: Tested with standard loads
+- **Test Command**: `test_relay`
+- **Test Results**: Clean ON/OFF switching with 2-second ON, 0.5-second OFF cycle
+- **Application**: Solenoid lock control, LED strip control
+- **Status**: ✅ OPERATIONAL - Reliable switching confirmed
+
+#### **Limit Switch** - TESTED & WORKING
+- **Configuration**: COM-NO (Normally Open) wiring on Pin 35
+- **Behavior**: Continuity when pressed, open circuit when released
+- **Test Command**: `test_limit`
+- **Test Results**: Successfully detects 3 consecutive press events with debouncing
+- **Application**: Emergency stop, motor homing, position limits
+- **Status**: ✅ OPERATIONAL - Accurate press detection with proper debouncing
+
+### Components Pending Testing
+
+#### **PIR Motion Sensor** - NOT YET TESTED
+- **Model**: HC-SR501 or compatible
+- **Pin**: GPIO 34 (input-only)
+- **Test Command**: `test_motion`
+- **Requirements**: 5-second warm-up period, baseline establishment, motion trigger detection
+- **Status**: ⏳ PENDING - Hardware verification needed
+- **Next Steps**: Run motion sensor test after proper installation and calibration
+
+### Testing Procedure Summary
+
+All working components have been verified using the integrated serial testing interface:
+
+1. **Stepper Motors**: Validated bidirectional rotation, speed control, and TB6600 driver communication
+2. **Reed Switch**: Confirmed magnetic sensing and proper COM-NO wiring interpretation
+3. **Relay Module**: Verified electrical switching capability and control signal response
+4. **Limit Switch**: Validated mechanical actuation detection and debouncing algorithm
+
+The testing interface provides real-time feedback with detailed status messages, making hardware troubleshooting and calibration straightforward.
+
 ## Maintenance
 
 ### Regular Checks

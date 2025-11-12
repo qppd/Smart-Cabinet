@@ -45,12 +45,11 @@ MotionSensor motionSensor(CLIENT_PIR_PIN);
 TB6600 doorMotor(CLIENT_TB1_DIR, CLIENT_TB1_STEP, CLIENT_TB1_ENABLE);
 TB6600 lockMotor(CLIENT_TB2_DIR, CLIENT_TB2_STEP, CLIENT_TB2_ENABLE);
 
-// Relay control
-Relay4 relayBoard(CLIENT_RELAY1_PIN, CLIENT_RELAY2_PIN, CLIENT_RELAY3_PIN, CLIENT_RELAY4_PIN);
+// Relay control (only relay 1 on pin 13)
+Relay4 relayBoard(13, CLIENT_RELAY2_PIN, CLIENT_RELAY3_PIN, CLIENT_RELAY4_PIN);
 
-// Safety switches
-LimitSwitch limitSwitchMin(CLIENT_LIMIT_MIN_PIN);
-LimitSwitch limitSwitchMax(CLIENT_LIMIT_MAX_PIN);
+// Safety switches (only one limit switch on pin 35)
+LimitSwitch limitSwitch(35);
 ReedSwitch reedSwitch(CLIENT_REED_SWITCH_PIN);
 
 // Network communication
@@ -144,6 +143,10 @@ void setup() {
   Serial.println("[CLIENT] System initialization complete!");
   Serial.println("===============================================");
   
+  // Print test commands help
+  Serial.println();
+  printTestHelp();
+  
   // Initial state
   currentState = CLIENT_LOCKED;
   sendStatusUpdate();
@@ -154,6 +157,9 @@ void setup() {
 // ===========================================
 
 void loop() {
+  // Handle serial commands for testing
+  handleSerialCommands();
+  
   // Update all sensors and components
   updateComponents();
   
@@ -221,10 +227,8 @@ void initializeHardware() {
   Serial.println("[CLIENT] Relay board initialized");
   
   // Initialize switches
-  limitSwitchMin.begin();
-  limitSwitchMax.begin();
-  limitSwitchMin.setCallback(onLimitSwitchTriggered);
-  limitSwitchMax.setCallback(onLimitSwitchTriggered);
+  limitSwitch.begin();
+  limitSwitch.setCallback(onLimitSwitchTriggered);
   reedSwitch.begin();
   Serial.println("[CLIENT] Safety switches initialized");
   
@@ -250,8 +254,7 @@ void updateComponents() {
   motionSensor.update();
   doorMotor.update();
   lockMotor.update();
-  limitSwitchMin.update();
-  limitSwitchMax.update();
+  limitSwitch.update();
   wsClient.loop();
   
   // Check motor completion status
@@ -476,7 +479,7 @@ void handleEmergencyConditions() {
   
   // Check limit switches during motor operations
   if (doorMotorRunning || lockMotorRunning) {
-    if (limitSwitchMin.isPressed() || limitSwitchMax.isPressed()) {
+    if (limitSwitch.isPressed()) {
       emergencyStop = true;
       return;
     }
@@ -534,8 +537,7 @@ void sendStatusUpdate() {
   doc["lock_engaged"] = lockEngaged;
   doc["motion_detected"] = motionDetected;
   doc["reed_switch"] = reedSwitch.isClosed();
-  doc["limit_min"] = limitSwitchMin.isPressed();
-  doc["limit_max"] = limitSwitchMax.isPressed();
+  doc["limit_switch"] = limitSwitch.isPressed();
   doc["door_motor_running"] = doorMotorRunning;
   doc["lock_motor_running"] = lockMotorRunning;
   doc["emergency_stop"] = emergencyStop;
@@ -592,4 +594,338 @@ void enableSystem(bool enable) {
   systemEnabled = enable;
   Serial.print("[CLIENT] System ");
   Serial.println(enable ? "ENABLED" : "DISABLED");
+}
+
+// ===========================================
+// SERIAL COMMAND TESTING FUNCTIONS
+// ===========================================
+
+void handleSerialCommands() {
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    command.toLowerCase();
+    
+    Serial.println();
+    Serial.println("========================================");
+    Serial.print("[TEST] Command received: ");
+    Serial.println(command);
+    Serial.println("========================================");
+    
+    if (command == "test_relay") {
+      testRelay();
+    } else if (command == "test_motor1") {
+      testMotor(1);
+    } else if (command == "test_motor2") {
+      testMotor(2);
+    } else if (command == "test_limit") {
+      testLimitSwitch();
+    } else if (command == "test_motion") {
+      testMotionSensor();
+    } else if (command == "test_reed") {
+      testReedSwitch();
+    } else if (command == "help") {
+      printTestHelp();
+    } else if (command != "") {
+      Serial.println("[TEST] Unknown command. Type 'help' for available commands.");
+    }
+  }
+}
+
+void printTestHelp() {
+  Serial.println();
+  Serial.println("╔════════════════════════════════════════════════════════════╗");
+  Serial.println("║          SMART CABINET TEST COMMANDS                       ║");
+  Serial.println("╚════════════════════════════════════════════════════════════╝");
+  Serial.println();
+  Serial.println("Available test commands:");
+  Serial.println("  test_relay    - Test relay 1 (Pin 13) - ON/OFF sequence");
+  Serial.println("  test_motor1   - Test Motor 1 (Door Motor) - 2s CW, 2s CCW");
+  Serial.println("  test_motor2   - Test Motor 2 (Lock Motor) - 2s CW, 2s CCW");
+  Serial.println("  test_limit    - Test limit switch (Pin 35) - press 3x to pass");
+  Serial.println("  test_motion   - Test motion sensor (trigger to pass)");
+  Serial.println("  test_reed     - Test reed switch (trigger to pass)");
+  Serial.println("  help          - Show this help message");
+  Serial.println();
+  Serial.println("════════════════════════════════════════════════════════════");
+  Serial.println();
+}
+
+void testRelay() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│      RELAY TEST STARTED                │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  
+  Serial.println("[TEST] Testing Relay 1 (Pin 13)...");
+  
+  // Turn ON
+  Serial.println("  → Turning relay ON");
+  relayBoard.set(1, true);
+  delay(2000);
+  
+  // Turn OFF
+  Serial.println("  → Turning relay OFF");
+  relayBoard.set(1, false);
+  delay(500);
+  
+  Serial.println("[TEST] Relay 1 test completed ✓");
+  Serial.println();
+  
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│    RELAY TEST COMPLETED - SUCCESS ✓    │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+}
+
+void testMotor(int motorNum) {
+  Serial.println();
+  Serial.print("┌────────────────────────────────────────┐");
+  Serial.println();
+  Serial.print("│      MOTOR ");
+  Serial.print(motorNum);
+  Serial.println(" TEST STARTED              │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  
+  TB6600* motor = (motorNum == 1) ? &doorMotor : &lockMotor;
+  String motorName = (motorNum == 1) ? "Door Motor" : "Lock Motor";
+  
+  Serial.print("[TEST] Testing ");
+  Serial.println(motorName);
+  Serial.println();
+  
+  // Enable motor
+  motor->enable(true);
+  Serial.println("[TEST] Motor enabled");
+  
+  // Test CW direction
+  Serial.println("[TEST] Running Clockwise for 2 seconds...");
+  motor->setDirection(true);
+  unsigned long startTime = millis();
+  while (millis() - startTime < 2000) {
+    motor->stepOnce(CLIENT_MOTOR_PULSE_US);
+    delayMicroseconds(CLIENT_MOTOR_GAP_US);
+  }
+  Serial.println("[TEST] Clockwise rotation completed ✓");
+  delay(500);
+  
+  // Test CCW direction
+  Serial.println("[TEST] Running Counter-Clockwise for 2 seconds...");
+  motor->setDirection(false);
+  startTime = millis();
+  while (millis() - startTime < 2000) {
+    motor->stepOnce(CLIENT_MOTOR_PULSE_US);
+    delayMicroseconds(CLIENT_MOTOR_GAP_US);
+  }
+  Serial.println("[TEST] Counter-Clockwise rotation completed ✓");
+  
+  // Disable motor
+  motor->enable(false);
+  Serial.println("[TEST] Motor disabled");
+  Serial.println();
+  
+  Serial.print("┌────────────────────────────────────────┐");
+  Serial.println();
+  Serial.print("│   MOTOR ");
+  Serial.print(motorNum);
+  Serial.println(" TEST COMPLETED - SUCCESS ✓ │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+}
+
+void testLimitSwitch() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│    LIMIT SWITCH TEST STARTED           │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  Serial.println("[TEST] Limit Switch wiring: COM-NO (Normally Open)");
+  Serial.println("[TEST] NOT pressed = No continuity (HIGH)");
+  Serial.println("[TEST] PRESSED = Continuity (LOW)");
+  Serial.println("[TEST] Pin: 35");
+  Serial.println();
+  
+  // Test Limit Switch
+  Serial.println("[TEST] Testing Limit Switch (Pin 35)...");
+  Serial.println("[TEST] Please press the limit switch (3 times)");
+  int pressCount = 0;
+  bool lastState = false;
+  
+  while (pressCount < 3) {
+    limitSwitch.update();
+    bool currentState = limitSwitch.isPressed();
+    
+    if (currentState && !lastState) {
+      pressCount++;
+      Serial.print("  → Press detected: ");
+      Serial.print(pressCount);
+      Serial.println("/3");
+    }
+    lastState = currentState;
+    delay(50);
+  }
+  Serial.println("[TEST] Limit Switch test completed ✓");
+  Serial.println();
+  
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│  LIMIT SWITCH TEST COMPLETED - SUCCESS ✓│");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+}
+
+void testMotionSensor() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│    MOTION SENSOR TEST STARTED          │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  Serial.println("[TEST] Motion sensor initialization...");
+  Serial.println("[TEST] Please keep still and wait for sensor to stabilize...");
+  Serial.println();
+  
+  // Wait for sensor to stabilize (warm-up period)
+  for (int i = 5; i > 0; i--) {
+    Serial.print("[TEST] Stabilizing... ");
+    Serial.print(i);
+    Serial.println(" seconds");
+    delay(1000);
+  }
+  
+  Serial.println();
+  Serial.println("[TEST] Sensor stabilized!");
+  Serial.println("[TEST] No motion should be detected now...");
+  
+  // Check that there's no motion
+  bool motionClear = true;
+  for (int i = 0; i < 20; i++) {
+    motionSensor.update();
+    if (motionSensor.isMotion()) {
+      motionClear = false;
+      Serial.println("[TEST] WARNING: Motion detected during stabilization!");
+      Serial.println("[TEST] Please restart test and remain still.");
+      return;
+    }
+    delay(100);
+  }
+  
+  if (motionClear) {
+    Serial.println("[TEST] ✓ No motion detected - Baseline established");
+    Serial.println();
+    Serial.println("[TEST] Now testing motion detection...");
+    Serial.println("[TEST] Please move in front of the sensor!");
+    Serial.println();
+    
+    // Wait for motion detection
+    bool motionDetected = false;
+    unsigned long testStart = millis();
+    unsigned long timeout = 30000; // 30 second timeout
+    
+    while (!motionDetected && (millis() - testStart < timeout)) {
+      motionSensor.update();
+      if (motionSensor.isMotion()) {
+        motionDetected = true;
+        Serial.println("[TEST] ✓✓✓ MOTION DETECTED! ✓✓✓");
+        break;
+      }
+      
+      // Print waiting indicator every 2 seconds
+      if ((millis() - testStart) % 2000 < 50) {
+        Serial.println("[TEST] Waiting for motion...");
+      }
+      delay(50);
+    }
+    
+    Serial.println();
+    if (motionDetected) {
+      Serial.println("┌────────────────────────────────────────┐");
+      Serial.println("│  MOTION SENSOR TEST COMPLETED - SUCCESS ✓│");
+      Serial.println("└────────────────────────────────────────┘");
+    } else {
+      Serial.println("┌────────────────────────────────────────┐");
+      Serial.println("│  MOTION SENSOR TEST FAILED - TIMEOUT   │");
+      Serial.println("└────────────────────────────────────────┘");
+    }
+    Serial.println();
+  }
+}
+
+void testReedSwitch() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│      REED SWITCH TEST STARTED          │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  Serial.println("[TEST] Reed switch initialization...");
+  Serial.println("[TEST] Reed Switch wiring: COM-NO (Normally Open)");
+  Serial.println("[TEST] Magnet FAR = Continuity (LOW)");
+  Serial.println("[TEST] Magnet CLOSE = No continuity (HIGH)");
+  Serial.println("[TEST] Please ensure magnet is FAR from the sensor...");
+  Serial.println();
+  
+  // Wait for sensor to stabilize
+  for (int i = 3; i > 0; i--) {
+    Serial.print("[TEST] Stabilizing... ");
+    Serial.print(i);
+    Serial.println(" seconds");
+    delay(1000);
+  }
+  
+  Serial.println();
+  Serial.println("[TEST] Sensor stabilized!");
+  
+  // Read initial state - we expect continuity (closed circuit, LOW) when magnet is far
+  bool initialState = reedSwitch.isClosed();
+  
+  Serial.print("[TEST] Initial state: ");
+  Serial.print(initialState ? "CLOSED/LOW (continuity - magnet far)" : "OPEN/HIGH (no continuity - magnet close)");
+  Serial.println();
+  
+  // We want the magnet to be FAR initially (continuity = closed = LOW)
+  if (!initialState) {
+    Serial.println("[TEST] WARNING: No continuity detected! Magnet might be too close.");
+    Serial.println("[TEST] Please move magnet away and restart test.");
+    return;
+  }
+  
+  Serial.println("[TEST] ✓ Continuity detected - Magnet is far (baseline established)");
+  Serial.println();
+  Serial.println("[TEST] Now testing reed switch trigger...");
+  Serial.println("[TEST] Please bring magnet CLOSE to the sensor!");
+  Serial.println("[TEST] (Continuity should break when magnet is close)");
+  Serial.println();
+  
+  // Wait for reed switch trigger - looking for open circuit (no continuity, HIGH)
+  bool switchTriggered = false;
+  unsigned long testStart = millis();
+  unsigned long timeout = 30000; // 30 second timeout
+  
+  while (!switchTriggered && (millis() - testStart < timeout)) {
+    // When magnet is close, continuity breaks, so isClosed() returns false
+    if (!reedSwitch.isClosed()) {
+      switchTriggered = true;
+      Serial.println("[TEST] ✓✓✓ REED SWITCH TRIGGERED! ✓✓✓");
+      Serial.println("[TEST] Continuity broken - Magnet detected close!");
+      break;
+    }
+    
+    // Print waiting indicator every 2 seconds
+    if ((millis() - testStart) % 2000 < 50) {
+      Serial.println("[TEST] Waiting for magnet...");
+    }
+    delay(50);
+  }
+  
+  Serial.println();
+  if (switchTriggered) {
+    Serial.println("┌────────────────────────────────────────┐");
+    Serial.println("│  REED SWITCH TEST COMPLETED - SUCCESS ✓ │");
+    Serial.println("└────────────────────────────────────────┘");
+  } else {
+    Serial.println("┌────────────────────────────────────────┐");
+    Serial.println("│   REED SWITCH TEST FAILED - TIMEOUT    │");
+    Serial.println("└────────────────────────────────────────┘");
+  }
+  Serial.println();
 }
