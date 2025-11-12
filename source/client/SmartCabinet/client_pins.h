@@ -37,7 +37,7 @@ static const uint8_t CLIENT_RELAY3_PIN = 22;  // Auxiliary device 1
 static const uint8_t CLIENT_RELAY4_PIN = 23;  // Auxiliary device 2
 
 // Limit Switches (Safety/Homing)
-static const uint8_t CLIENT_LIMIT_MIN_PIN = 35;  // Minimum position limit switch - Input-only, OK
+static const uint8_t CLIENT_LIMIT_MIN_PIN = 5;  // Minimum position limit switch - Input-only, OK
 static const uint8_t CLIENT_LIMIT_MAX_PIN = 36;  // Maximum position limit switch - Input-only, OK
 
 // Reed Switch (Door closed detection)
