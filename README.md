@@ -1398,6 +1398,7 @@ Smart-Cabinet/
 │   ├── Cabinet_Actuator_Mount.stl         # 3D printable actuator mounting bracket
 │   ├── Cabinet_Door_Puller_Mount.png      # Door puller mount design preview
 │   ├── Cabinet_Door_Puller_Mount.stl      # 3D printable door puller mounting bracket
+│   ├── CE3V3SE_Cabinet_Door_Puller_Mount.gcode # Ready-to-print door puller mount (Creality Ender 3 V3 SE)
 │   ├── Cabinet_Scanner_Case.png           # Scanner case design preview
 │   ├── Cabinet_Scanner_Case.stl           # 3D printable fingerprint scanner enclosure
 │   ├── Cabinet_Scanner_Case_Mount.png     # Scanner mount design preview
@@ -1648,6 +1649,7 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
 - **Files Available:**
   - `Cabinet_Door_Puller_Mount.stl` - 3D model for any slicer software
   - `Cabinet_Door_Puller_Mount.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Door_Puller_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
 
 - **Purpose:** Mounting bracket for door pulling mechanism
 - **Features:**
