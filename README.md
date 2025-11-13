@@ -1394,21 +1394,22 @@ Smart-Cabinet/
 │   └── img20.jpg                          # Complete wiring diagram
 │
 ├── 📁 model/                              # Design & 3D Models
+│   ├── Cabinet_Actuator_Mount.png         # Actuator mount design preview
+│   ├── Cabinet_Actuator_Mount.stl         # 3D printable actuator mounting bracket
+│   ├── Cabinet_Door_Puller_Mount.png      # Door puller mount design preview
+│   ├── Cabinet_Door_Puller_Mount.stl      # 3D printable door puller mounting bracket
 │   ├── Cabinet_Scanner_Case.png           # Scanner case design preview
 │   ├── Cabinet_Scanner_Case.stl           # 3D printable fingerprint scanner enclosure
 │   ├── Cabinet_Scanner_Case_Mount.png     # Scanner mount design preview
 │   ├── Cabinet_Scanner_Case_Mount.stl     # 3D printable mounting bracket
+│   ├── Cabinet_Stepper_Mount.gcode        # Ready-to-print stepper mount (Creality Ender 3 V3 SE)
+│   ├── Cabinet_Stepper_Mount.stl          # 3D printable stepper motor mount
 │   ├── CE3V3SE_Cabinet_Scanner_Case.gcode # Ready-to-print scanner case (Creality Ender 3 V3 SE)
 │   ├── CE3V3SE_Cabinet_Scanner_Case_Mount.gcode # Ready-to-print mount (Creality Ender 3 V3 SE)
+│   ├── CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode # Ready-to-print stepper and bearing mount (Creality Ender 3 V3 SE)
 │   ├── SmartCabinet v0.png                # Initial concept design
 │   ├── SmartCabinet v03.png               # Design iteration 3
 │   └── SmartCabinet v4.png                # Final design version
-│
-│   ├── Cabinet_Actuator_Mount.stl        # 3D printable actuator mounting bracket
-│   ├── Cabinet_Actuator_Mount.png        # Actuator mount design preview
-│   ├── Cabinet_Stepper_Mount.stl         # 3D printable stepper motor mount
-│   ├── Cabinet_Stepper_Mount.gcode       # Ready-to-print stepper mount (Creality Ender 3 V3 SE)
-│   ├── CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode # Ready-to-print stepper and bearing mount (Creality Ender 3 V3 SE)
 ├── README.md                              # Main project documentation
 └── LICENSE                                # Project license file
 ```
@@ -1587,26 +1588,47 @@ For General Questions:
 All 3D models are available in the [model directory](https://github.com/qppd/Smart-Cabinet/tree/main/model) with ready-to-print files.
 
 **Fingerprint Scanner Enclosure:**
+
+<div align="center">
+  <img src="model/Cabinet_Scanner_Case.png" alt="Cabinet Scanner Case Preview" width="400"/>
+</div>
+
+- **Files Available:**
   - `Cabinet_Scanner_Case.stl` - 3D model for any slicer software
   - `Cabinet_Scanner_Case.png` - Preview/reference image
   - `CE3V3SE_Cabinet_Scanner_Case.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
+- **Purpose:** Protective enclosure for AS608/R307 fingerprint sensor
+- **Features:**
   - Secure sensor mounting with snap-fit design
   - Wire management channels for clean installation
   - Professional appearance for cabinet integration
   - Compatible with standard fingerprint sensor modules
 
 **Scanner Mounting Bracket:**
+
+<div align="center">
+  <img src="model/Cabinet_Scanner_Case_Mount.png" alt="Cabinet Scanner Case Mount Preview" width="400"/>
+</div>
+
+- **Files Available:**
   - `Cabinet_Scanner_Case_Mount.stl` - 3D model for any slicer software
   - `Cabinet_Scanner_Case_Mount.png` - Preview/reference image
   - `CE3V3SE_Cabinet_Scanner_Case_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
+- **Purpose:** Secure mounting bracket for scanner case attachment
+- **Features:**
   - Adjustable positioning for optimal finger placement
   - Screw mounting points for permanent installation
   - Compatible with various cabinet materials
   - Lightweight yet sturdy construction
 
 **Actuator Mount:**
+
+<div align="center">
+  <img src="model/Cabinet_Actuator_Mount.png" alt="Cabinet Actuator Mount Preview" width="400"/>
+</div>
+
 - **Files Available:**
   - `Cabinet_Actuator_Mount.stl` - 3D model for any slicer software
   - `Cabinet_Actuator_Mount.png` - Preview/reference image
@@ -1617,16 +1639,36 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
   - Multiple mounting holes for flexible placement
   - Designed for easy integration with cabinet frame
 
+**Door Puller Mount:**
+
+<div align="center">
+  <img src="model/Cabinet_Door_Puller_Mount.png" alt="Cabinet Door Puller Mount Preview" width="400"/>
+</div>
+
+- **Files Available:**
+  - `Cabinet_Door_Puller_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Door_Puller_Mount.png` - Preview/reference image
+
+- **Purpose:** Mounting bracket for door pulling mechanism
+- **Features:**
+  - Designed for smooth door opening operation
+  - Reinforced structure for reliable performance
+  - Easy installation on cabinet frame
+  - Compatible with various actuator types
+
 **Stepper Motor Mount:**
+
 - **Files Available:**
   - `Cabinet_Stepper_Mount.stl` - 3D model for any slicer software
   - `Cabinet_Stepper_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  - `CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode` - Pre-sliced stepper and bearing mount (Creality Ender 3 V3 SE)
 
 - **Purpose:** Mount for stepper motor used in cabinet locking or actuation
 - **Features:**
   - Precise fit for NEMA stepper motors
   - Rigid structure for vibration reduction
   - Easy mounting to cabinet or enclosure
+  - Includes integrated bearing mount for additional support
 **Printing Recommendations:**
 - **Material:** PLA or PETG recommended
 - **Layer Height:** 0.2mm for optimal detail
