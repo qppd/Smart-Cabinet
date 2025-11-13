@@ -57,26 +57,22 @@
 ## Overview
 
 The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, and seamless user interaction through biometric authentication and automated mechanical operations.
-
 ### Project Goals
 - **Security**: Multi-layered access control with biometric authentication
 - **Automation**: Intelligent operation with minimal user intervention  
-- **Safety**: Comprehensive emergency systems and fail-safes
-- **Scalability**: Modular design for easy expansion and customization
 - **Reliability**: Robust error handling and system recovery
 
 ---
 
 ## Key Features
-
 ### Advanced Security
 - **Biometric Authentication**: AS608 fingerprint sensor with 50+ user capacity
+  - `CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE (Stepper and Bearing Mount)
 - **One-Touch Enrollment**: Simple button-press enrollment system (GPIO 23)
-- **Reliable Matching**: Fixed authentication flow for consistent fingerprint recognition
-- **Multi-layer Locking**: Electronic solenoid + mechanical stepper motor locks
 - **Access Logging**: Real-time authentication tracking and user management
 - **Emergency Override**: Manual unlock procedures for critical situations
 
+  - Includes integrated bearing mount for additional support
 ### Intelligent Automation
 - **Smart Motion Detection**: PIR sensor with adaptive sensitivity
 - **Auto-Close System**: Configurable timeout (default: 60 seconds)
@@ -1404,6 +1400,11 @@ Smart-Cabinet/
 │   ├── SmartCabinet v03.png               # Design iteration 3
 │   └── SmartCabinet v4.png                # Final design version
 │
+│   ├── Cabinet_Actuator_Mount.stl        # 3D printable actuator mounting bracket
+│   ├── Cabinet_Actuator_Mount.png        # Actuator mount design preview
+│   ├── Cabinet_Stepper_Mount.stl         # 3D printable stepper motor mount
+│   ├── Cabinet_Stepper_Mount.gcode       # Ready-to-print stepper mount (Creality Ender 3 V3 SE)
+│   ├── CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode # Ready-to-print stepper and bearing mount (Creality Ender 3 V3 SE)
 ├── README.md                              # Main project documentation
 └── LICENSE                                # Project license file
 ```
@@ -1582,31 +1583,46 @@ For General Questions:
 All 3D models are available in the [model directory](https://github.com/qppd/Smart-Cabinet/tree/main/model) with ready-to-print files.
 
 **Fingerprint Scanner Enclosure:**
-- **Files Available:**
   - `Cabinet_Scanner_Case.stl` - 3D model for any slicer software
   - `Cabinet_Scanner_Case.png` - Preview/reference image
   - `CE3V3SE_Cabinet_Scanner_Case.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
-- **Purpose:** Protective enclosure for AS608/R307 fingerprint sensor
-- **Features:**
   - Secure sensor mounting with snap-fit design
   - Wire management channels for clean installation
   - Professional appearance for cabinet integration
   - Compatible with standard fingerprint sensor modules
 
 **Scanner Mounting Bracket:**
-- **Files Available:**
   - `Cabinet_Scanner_Case_Mount.stl` - 3D model for any slicer software
   - `Cabinet_Scanner_Case_Mount.png` - Preview/reference image
   - `CE3V3SE_Cabinet_Scanner_Case_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
-- **Purpose:** Secure mounting bracket for scanner case attachment
-- **Features:**
   - Adjustable positioning for optimal finger placement
   - Screw mounting points for permanent installation
   - Compatible with various cabinet materials
   - Lightweight yet sturdy construction
 
+**Actuator Mount:**
+- **Files Available:**
+  - `Cabinet_Actuator_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Actuator_Mount.png` - Preview/reference image
+
+- **Purpose:** Mounting bracket for cabinet actuator/linear actuator
+- **Features:**
+  - Robust design for secure actuator installation
+  - Multiple mounting holes for flexible placement
+  - Designed for easy integration with cabinet frame
+
+**Stepper Motor Mount:**
+- **Files Available:**
+  - `Cabinet_Stepper_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Stepper_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+
+- **Purpose:** Mount for stepper motor used in cabinet locking or actuation
+- **Features:**
+  - Precise fit for NEMA stepper motors
+  - Rigid structure for vibration reduction
+  - Easy mounting to cabinet or enclosure
 **Printing Recommendations:**
 - **Material:** PLA or PETG recommended
 - **Layer Height:** 0.2mm for optimal detail
