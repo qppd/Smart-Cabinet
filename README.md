@@ -37,9 +37,6 @@
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)
-<div align="center">
-  <img src="model/Cabinet_Scanner_Case.png" alt="Cabinet Scanner Case Preview" width="300"/>
-</div>
 - [Hardware Requirements](#hardware-requirements)
 - [Wiring Diagram](#wiring-diagram)
 - [Software Dependencies](#software-dependencies)
@@ -50,9 +47,6 @@
 - [Testing & Validation](#testing--validation)
 - [Troubleshooting](#troubleshooting)
 - [Project Structure](#project-structure)
-<div align="center">
-  <img src="model/Cabinet_Scanner_Case_Mount.png" alt="Cabinet Scanner Case Mount Preview" width="300"/>
-</div>
 - [Future Enhancements](#future-enhancements)
 - [Contributing](#contributing)
 - [Support & Contact](#support--contact)
@@ -63,22 +57,28 @@
 ## Overview
 
 The **Smart Cabinet System** is a sophisticated IoT-enabled secure storage solution designed for environments requiring controlled access and intelligent automation. This dual-controller architecture provides robust security, and seamless user interaction through biometric authentication and automated mechanical operations.
-<div align="center">
-  <img src="model/Cabinet_Actuator_Mount.png" alt="Cabinet Actuator Mount Preview" width="300"/>
-</div>
+
+### Project Goals
 - **Security**: Multi-layered access control with biometric authentication
 - **Automation**: Intelligent operation with minimal user intervention  
+- **Safety**: Comprehensive emergency systems and fail-safes
+- **Scalability**: Modular design for easy expansion and customization
 - **Reliability**: Robust error handling and system recovery
 
+---
+
 ## Key Features
+
 ### Advanced Security
 - **Biometric Authentication**: AS608 fingerprint sensor with 50+ user capacity
-  - `CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE (Stepper and Bearing Mount)
-<!-- No PNG for stepper mount, so no image shown. -->
+- **One-Touch Enrollment**: Simple button-press enrollment system (GPIO 23)
+- **Reliable Matching**: Fixed authentication flow for consistent fingerprint recognition
+- **Multi-layer Locking**: Electronic solenoid + mechanical stepper motor locks
 - **Access Logging**: Real-time authentication tracking and user management
 - **Emergency Override**: Manual unlock procedures for critical situations
 
-  - Includes integrated bearing mount for additional support
+### Intelligent Automation
+- **Smart Motion Detection**: PIR sensor with adaptive sensitivity
 - **Auto-Close System**: Configurable timeout (default: 60 seconds)
 - **State Management**: Advanced finite state machine for reliable operation
 
@@ -293,9 +293,17 @@ Custom-designed 3D printable components for professional installation and sensor
 
 ### System Wiring Overview
 
-![Smart Cabinet Wiring Diagram](diagram/Host.png)
+#### HOST Controller Wiring
 
-*Complete system wiring schematic showing HOST and CLIENT controller connections*
+![Smart Cabinet Host Wiring Diagram](diagram/Host.png)
+
+*HOST controller wiring schematic showing authentication and user interface connections*
+
+#### CLIENT Controller Wiring
+
+![Smart Cabinet Client Wiring Diagram](diagram/Client.png)
+
+*CLIENT controller wiring schematic showing motor control and safety system connections*
 
 ### Dual-Controller Architecture
 
