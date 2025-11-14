@@ -1416,6 +1416,16 @@ Smart-Cabinet/
 │   ├── CE3V3SE_Cabinet_Scanner_Case.gcode # Ready-to-print scanner case (Creality Ender 3 V3 SE)
 │   ├── CE3V3SE_Cabinet_Scanner_Case_Mount.gcode # Ready-to-print mount (Creality Ender 3 V3 SE)
 │   ├── CE3V3SE_Cabinet_Stepper_Mount_And_Bearing_Mount.gcode # Ready-to-print stepper and bearing mount (Creality Ender 3 V3 SE)
+│   ├── Cabinet_Bearing_Mount.png          # Bearing mount design preview
+│   ├── Cabinet_Bearing_Mount.stl          # 3D printable bearing mounting bracket
+│   ├── CE3V3SE_Cabinet_Bearing_Mount.gcode # Ready-to-print bearing mount (Creality Ender 3 V3 SE)
+│   ├── Cabinet_Limit_Switch_Mount.png     # Limit switch mount design preview
+│   ├── Cabinet_Limit_Switch_Mount.stl     # 3D printable limit switch mounting bracket
+│   ├── Cabinet_Limit_Switch_Mount_Cover.stl # Protective cover for limit switch mount
+│   ├── CE3V3SE_Cabinet_Limit_Switch_Mount.gcode # Ready-to-print limit switch mount (Creality Ender 3 V3 SE)
+│   ├── Cabinet_Stick_Mount.png            # Stick mount design preview
+│   ├── Cabinet_Stick_Mount.stl            # 3D printable stick mounting bracket
+│   ├── CE3V3SE_Cabinet_Stick_Mount.gcode  # Ready-to-print stick mount (Creality Ender 3 V3 SE)
 │   ├── SmartCabinet v0.png                # Initial concept design
 │   ├── SmartCabinet v03.png               # Design iteration 3
 │   └── SmartCabinet v4.png                # Final design version
@@ -1679,6 +1689,62 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
   - Rigid structure for vibration reduction
   - Easy mounting to cabinet or enclosure
   - Includes integrated bearing mount for additional support
+
+**Bearing Mount:**
+
+<div align="center">
+  <img src="model/Cabinet_Bearing_Mount.png" alt="Cabinet Bearing Mount Preview" width="400"/>
+</div>
+
+- **Files Available:**
+  - `Cabinet_Bearing_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Bearing_Mount.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Bearing_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  
+- **Purpose:** Mounting bracket for bearings used in mechanical assemblies
+- **Features:**
+  - Secure bearing housing for smooth rotation
+  - Compatible with standard bearing sizes
+  - Easy integration with cabinet frame
+  - Durable design for long-term reliability
+
+**Limit Switch Mount:**
+
+<div align="center">
+  <img src="model/Cabinet_Limit_Switch_Mount.png" alt="Cabinet Limit Switch Mount Preview" width="400"/>
+</div>
+
+- **Files Available:**
+  - `Cabinet_Limit_Switch_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Limit_Switch_Mount_Cover.stl` - Protective cover for limit switch
+  - `Cabinet_Limit_Switch_Mount.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Limit_Switch_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  
+- **Purpose:** Mounting bracket for limit switches in automated systems
+- **Features:**
+  - Precise positioning for accurate switch activation
+  - Protective cover for environmental protection
+  - Screw mounting for secure installation
+  - Compatible with standard limit switch modules
+
+**Stick Mount:**
+
+<div align="center">
+  <img src="model/Cabinet_Stick_Mount.png" alt="Cabinet Stick Mount Preview" width="400"/>
+</div>
+
+- **Files Available:**
+  - `Cabinet_Stick_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Stick_Mount.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Stick_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  
+- **Purpose:** Mounting bracket for rods or sticks in mechanical linkages
+- **Features:**
+  - Adjustable mounting for flexible positioning
+  - Robust construction for load-bearing applications
+  - Easy assembly with standard fasteners
+  - Designed for smooth operation in cabinet mechanisms
+
 **Printing Recommendations:**
 - **Material:** PLA or PETG recommended
 - **Layer Height:** 0.2mm for optimal detail
