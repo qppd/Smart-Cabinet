@@ -1737,16 +1737,26 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
 
 - **Files Available:**
   - `Cabinet_Limit_Switch_Mount.stl` - 3D model for any slicer software
-  - `Cabinet_Limit_Switch_Mount_Cover.stl` - Protective cover for limit switch
   - `Cabinet_Limit_Switch_Mount.png` - Preview/reference image
   - `CE3V3SE_Cabinet_Limit_Switch_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
 - **Purpose:** Mounting bracket for limit switches in automated systems
 - **Features:**
   - Precise positioning for accurate switch activation
-  - Protective cover for environmental protection
   - Screw mounting for secure installation
   - Compatible with standard limit switch modules
+
+**Limit Switch Mount Cover:**
+
+- **Files Available:**
+  - `Cabinet_Limit_Switch_Mount_Cover.stl` - Protective cover for limit switch mount
+  
+- **Purpose:** Environmental protection for limit switch mounting assembly
+- **Features:**
+  - Secure fit over the limit switch mount
+  - Protection from dust and moisture
+  - Easy installation and removal
+  - Maintains professional appearance
 
 **Stick Mount:**
 
