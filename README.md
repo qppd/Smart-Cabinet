@@ -1411,6 +1411,9 @@ Smart-Cabinet/
 │   ├── Cabinet_Scanner_Case.stl           # 3D printable fingerprint scanner enclosure
 │   ├── Cabinet_Scanner_Case_Mount.png     # Scanner mount design preview
 │   ├── Cabinet_Scanner_Case_Mount.stl     # 3D printable mounting bracket
+│   ├── Cabinet_Scanner_Case_Cover.png     # Scanner case cover design preview
+│   ├── Cabinet_Scanner_Case_Cover.stl     # 3D printable protective cover for scanner case
+│   ├── CE3V3SE_Cabinet_Scanner_Case_Cover.gcode # Ready-to-print scanner case cover (Creality Ender 3 V3 SE)
 │   ├── Cabinet_Stepper_Mount.gcode        # Ready-to-print stepper mount (Creality Ender 3 V3 SE)
 │   ├── Cabinet_Stepper_Mount.stl          # 3D printable stepper motor mount
 │   ├── CE3V3SE_Cabinet_Scanner_Case.gcode # Ready-to-print scanner case (Creality Ender 3 V3 SE)
@@ -1641,6 +1644,24 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
   - Screw mounting points for permanent installation
   - Compatible with various cabinet materials
   - Lightweight yet sturdy construction
+
+**Scanner Case Cover:**
+
+<div align="center">
+  <img src="model/Cabinet_Scanner_Case_Cover.png" alt="Cabinet Scanner Case Cover Preview" width="400"/>
+</div>
+
+- **Files Available:**
+  - `Cabinet_Scanner_Case_Cover.stl` - 3D model for any slicer software
+  - `Cabinet_Scanner_Case_Cover.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Scanner_Case_Cover.gcode` - Pre-sliced for Creality Ender 3 V3 SE
+  
+- **Purpose:** Protective cover for the fingerprint scanner case
+- **Features:**
+  - Secure fit over the scanner enclosure
+  - Environmental protection for sensitive components
+  - Easy removal for maintenance access
+  - Professional appearance integration
 
 **Actuator Mount:**
 
