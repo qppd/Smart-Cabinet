@@ -1432,6 +1432,7 @@ Smart-Cabinet/
 │   ├── CE3V3SE_Cabinet_Stick_Mount.gcode  # Ready-to-print stick mount (Creality Ender 3 V3 SE)
 │   ├── Cabinet_Motion_Sensor_Mount.png    # Motion sensor mount design preview
 │   ├── Cabinet_Motion_Sensor_Mount.stl    # 3D printable motion sensor mounting bracket
+│   ├── CE3V3SE_Cabinet_Motion_Sensor_Mount.gcode # Ready-to-print motion sensor mount (Creality Ender 3 V3 SE)
 │   ├── Cabinet_Motion_Sensor_Mount_Cover.stl # Protective cover for motion sensor mount
 │   ├── SmartCabinet v0.png                # Initial concept design
 │   ├── SmartCabinet v03.png               # Design iteration 3
@@ -1790,6 +1791,7 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
 - **Files Available:**
   - `Cabinet_Motion_Sensor_Mount.stl` - 3D model for any slicer software
   - `Cabinet_Motion_Sensor_Mount.png` - Preview/reference image
+  - `CE3V3SE_Cabinet_Motion_Sensor_Mount.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
 - **Purpose:** Mounting bracket for motion sensors in automated systems
 - **Features:**
