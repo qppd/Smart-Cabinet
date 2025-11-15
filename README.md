@@ -1425,10 +1425,14 @@ Smart-Cabinet/
 │   ├── Cabinet_Limit_Switch_Mount.png     # Limit switch mount design preview
 │   ├── Cabinet_Limit_Switch_Mount.stl     # 3D printable limit switch mounting bracket
 │   ├── Cabinet_Limit_Switch_Mount_Cover.stl # Protective cover for limit switch mount
+│   ├── CE3V3SE_Cabinet_Limit_Switch_Mount_Cover.gcode # Ready-to-print limit switch mount cover (Creality Ender 3 V3 SE)
 │   ├── CE3V3SE_Cabinet_Limit_Switch_Mount.gcode # Ready-to-print limit switch mount (Creality Ender 3 V3 SE)
 │   ├── Cabinet_Stick_Mount.png            # Stick mount design preview
 │   ├── Cabinet_Stick_Mount.stl            # 3D printable stick mounting bracket
 │   ├── CE3V3SE_Cabinet_Stick_Mount.gcode  # Ready-to-print stick mount (Creality Ender 3 V3 SE)
+│   ├── Cabinet_Motion_Sensor_Mount.png    # Motion sensor mount design preview
+│   ├── Cabinet_Motion_Sensor_Mount.stl    # 3D printable motion sensor mounting bracket
+│   ├── Cabinet_Motion_Sensor_Mount_Cover.stl # Protective cover for motion sensor mount
 │   ├── SmartCabinet v0.png                # Initial concept design
 │   ├── SmartCabinet v03.png               # Design iteration 3
 │   └── SmartCabinet v4.png                # Final design version
@@ -1750,6 +1754,7 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
 
 - **Files Available:**
   - `Cabinet_Limit_Switch_Mount_Cover.stl` - Protective cover for limit switch mount
+  - `CE3V3SE_Cabinet_Limit_Switch_Mount_Cover.gcode` - Pre-sliced for Creality Ender 3 V3 SE
   
 - **Purpose:** Environmental protection for limit switch mounting assembly
 - **Features:**
@@ -1775,6 +1780,35 @@ All 3D models are available in the [model directory](https://github.com/qppd/Sma
   - Robust construction for load-bearing applications
   - Easy assembly with standard fasteners
   - Designed for smooth operation in cabinet mechanisms
+
+**Motion Sensor Mount:**
+
+<div align="center">
+  <img src="model/Cabinet_Motion_Sensor_Mount.png" alt="Cabinet Motion Sensor Mount Preview" width="400"/>
+</div>
+
+- **Files Available:**
+  - `Cabinet_Motion_Sensor_Mount.stl` - 3D model for any slicer software
+  - `Cabinet_Motion_Sensor_Mount.png` - Preview/reference image
+  
+- **Purpose:** Mounting bracket for motion sensors in automated systems
+- **Features:**
+  - Optimal positioning for motion detection
+  - Secure mounting for reliable operation
+  - Compatible with standard motion sensor modules
+  - Adjustable angle for customized coverage
+
+**Motion Sensor Mount Cover:**
+
+- **Files Available:**
+  - `Cabinet_Motion_Sensor_Mount_Cover.stl` - Protective cover for motion sensor mount
+  
+- **Purpose:** Environmental protection for motion sensor mounting assembly
+- **Features:**
+  - Secure fit over the motion sensor mount
+  - Protection from dust and environmental factors
+  - Easy installation and removal
+  - Maintains professional appearance
 
 **Printing Recommendations:**
 - **Material:** PLA or PETG recommended
