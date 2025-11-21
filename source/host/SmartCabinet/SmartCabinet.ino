@@ -1,5 +1,4 @@
 #include "I2CLcd.h"
-#include "NTPTime.h"
 #include "Buzzer.h"
 #include "FingerprintAS608.h"
 #include "ESPNowComm.h"
@@ -16,11 +15,13 @@ HardwareSerial FingerSerial(2);
 
 // Component instances
 I2CLcd lcd(LCD_ADDR, 20, 4);
-NTPTime ntpTime;
-Buzzer buzzer(BUZZER_PIN, 5, 2000);  // Use LEDC channel 5 to avoid WiFi conflicts
+Buzzer buzzer(BUZZER_PIN, 5, 2000);
 FingerprintAS608 finger(FingerSerial, 57600);
 ESPNowComm espNow;
 TactileButton enrollButton(ENROLL_BUTTON_PIN);
+
+// Uptime tracking
+unsigned long startTime = 0;
 
 void setup() {
   // Initialize host controller
@@ -66,40 +67,14 @@ void setup() {
   espNow.setPeerAddress(clientMAC);
   Serial.println("[HOST] ESP-NOW initialized");
   lcd.print(0, 3, "ESP-NOW: Ready");
-  delay(500); // Reduced from 1000ms
+  delay(1000);
 
-  // Connect to WiFi for NTP only
-  lcd.print(0, 3, "WiFi: Connecting...");
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(HOST_WIFI_SSID, HOST_WIFI_PASSWORD);
+  // Record start time
+  startTime = millis();
   
-  int wifiRetries = 0;
-  while (WiFi.status() != WL_CONNECTED && wifiRetries < 15) {
-    delay(1000);
-    wifiRetries++;
-    Serial.print(".");
-  }
-  
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n[HOST] WiFi connected");
-    Serial.print("[HOST] IP address: ");
-    Serial.println(WiFi.localIP());
-    lcd.print(0, 3, "WiFi: Connected");
-  } else {
-    Serial.println("\n[HOST] WiFi connection failed");
-    lcd.print(0, 3, "WiFi: Failed!");
-  }
-  delay(500); // Reduced from 1000ms
-
-  // Initialize NTP Time (requires WiFi)
-  ntpTime.begin();
-  Serial.println("[HOST] NTP time initialized");
-  
-  // Display date and time from NTP
-  ntpTime.updateTime();
   lcd.clear();
   lcd.print(0, 0, "Smart Cabinet Host");
-  ntpTime.displayTime(lcd, 0, 3);
+  lcd.print(0, 1, "System Ready");
 
   Serial.println("[HOST] Host controller initialization complete");
   Serial.println("===============================================");
@@ -139,10 +114,15 @@ void loop() {
   // Update display every second (only changing parts)
   if (millis() - lastUpdate > 1000) {
     lastUpdate = millis();
-    ntpTime.updateTime();
     
-    // Update time (line 1) - no clear needed
-    ntpTime.displayTime(lcd, 0, 1);
+    // Update uptime (line 1)
+    unsigned long uptime = (millis() - startTime) / 1000;
+    unsigned long hours = uptime / 3600;
+    unsigned long minutes = (uptime % 3600) / 60;
+    unsigned long seconds = uptime % 60;
+    char uptimeStr[21];
+    sprintf(uptimeStr, "Up: %02luh %02lum %02lus", hours, minutes, seconds);
+    lcd.print(0, 1, uptimeStr);
     
     // Update system status (line 2)
     if (espNow.hasConnectedPeer()) {

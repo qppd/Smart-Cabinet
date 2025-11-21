@@ -9,7 +9,7 @@
   - Stepper motor control for door/drawer operations
   - Relay control for solenoids and LED strips
   - Safety switches (limit switches, reed switch)
-  - WebSocket communication with the host controller
+  - ESP-NOW communication with the host controller
   
   Components managed:
   - PIR Motion Sensor
@@ -17,22 +17,26 @@
   - 4-Channel Relay Module
   - Limit Switches (safety/homing)
   - Reed Switch (door position)
-  - WebSocket Client
+  - ESP-NOW Client
   
   Author: QPPD
-  Version: 1.0
+  Version: 2.0
   Date: 2025
 */
 
 #include <WiFi.h>
-#include <ArduinoJson.h>
 #include "client_pins.h"
 #include "MotionSensor.h"
 #include "TB6600.h" 
 #include "Relay4.h"
 #include "LimitSwitch.h"
 #include "ReedSwitch.h"
-#include "WebSocketClient.h"
+#include "ESPNowClient.h"
+
+// ===========================================
+// HOST ESP32 MAC ADDRESS - REPLACE WITH YOUR HOST'S MAC ADDRESS
+// ===========================================
+uint8_t hostMAC[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 // ===========================================
 // COMPONENT INSTANCES
@@ -52,8 +56,8 @@ Relay4 relayBoard(13, CLIENT_RELAY2_PIN, CLIENT_RELAY3_PIN, CLIENT_RELAY4_PIN);
 LimitSwitch limitSwitch(5);
 ReedSwitch reedSwitch(CLIENT_REED_SWITCH_PIN);
 
-// Network communication
-WebSocketClient wsClient;
+// ESP-NOW communication
+ESPNowClient espNowClient;
 
 // ===========================================
 // SYSTEM STATE VARIABLES
@@ -98,16 +102,8 @@ void onMotionDetected(bool motion) {
     lastMotionTime = millis();
     Serial.println("[CLIENT] Motion detected!");
     
-    // Send motion event to host
-    if (wsClient.isConnected()) {
-      DynamicJsonDocument doc(200);
-      doc["type"] = "motion";
-      doc["detected"] = motion;
-      doc["timestamp"] = millis();
-      String message;
-      serializeJson(doc, message);
-      wsClient.sendMessage(message);
-    }
+    // Send motion event to host via ESP-NOW
+    espNowClient.sendMotionDetected(true);
   }
 }
 
@@ -131,14 +127,11 @@ void setup() {
   Serial.println("SMART CABINET CLIENT CONTROLLER STARTING...");
   Serial.println("===============================================");
   
-  // Initialize WiFi
-  initializeWiFi();
-  
   // Initialize hardware components
   initializeHardware();
   
-  // Initialize WebSocket connection
-  initializeWebSocket();
+  // Initialize ESP-NOW communication
+  initializeESPNow();
   
   Serial.println("[CLIENT] System initialization complete!");
   Serial.println("===============================================");
@@ -183,27 +176,14 @@ void loop() {
 // INITIALIZATION FUNCTIONS
 // ===========================================
 
-void initializeWiFi() {
-  Serial.print("[CLIENT] Connecting to WiFi: ");
-  Serial.println(CLIENT_WIFI_SSID);
+void initializeESPNow() {
+  Serial.println("[CLIENT] Initializing ESP-NOW...");
   
-  WiFi.begin(CLIENT_WIFI_SSID, CLIENT_WIFI_PASSWORD);
+  espNowClient.begin();
+  espNowClient.setPeerAddress(hostMAC);
+  espNowClient.setMessageCallback(onESPNowMessage);
   
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
-    delay(500);
-    Serial.print(".");
-    attempts++;
-  }
-  
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println();
-    Serial.print("[CLIENT] WiFi connected! IP: ");
-    Serial.println(WiFi.localIP());
-  } else {
-    Serial.println();
-    Serial.println("[CLIENT] WiFi connection failed! Operating in standalone mode.");
-  }
+  Serial.println("[CLIENT] ESP-NOW initialized and paired with host");
 }
 
 void initializeHardware() {
@@ -238,11 +218,63 @@ void initializeHardware() {
   Serial.println(doorIsOpen ? "OPEN" : "CLOSED");
 }
 
-void initializeWebSocket() {
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("[CLIENT] Connecting to WebSocket server...");
-    wsClient.begin(CLIENT_WEBSOCKET_HOST, CLIENT_WEBSOCKET_PORT, CLIENT_WEBSOCKET_PATH);
+// ESP-NOW message handler
+void onESPNowMessage(const char* command, int userId, bool success, const char* data) {
+  Serial.print("[CLIENT] ESP-NOW Command: ");
+  Serial.print(command);
+  Serial.print(" | UserID: ");
+  Serial.println(userId);
+  
+  if (strcmp(command, "unlock") == 0 && success) {
+    // Received unlock command from host
+    Serial.println("[CLIENT] Unlock command received, opening cabinet...");
+    executeUnlock();
+  } else if (strcmp(command, "authResult") == 0) {
+    // Received authentication result
+    if (success) {
+      Serial.println("[CLIENT] Authentication successful");
+    } else {
+      Serial.println("[CLIENT] Authentication failed");
+    }
   }
+}
+
+// Execute unlock sequence
+void executeUnlock() {
+  if (emergencyStop) {
+    Serial.println("[CLIENT] Cannot unlock - Emergency stop active");
+    return;
+  }
+  
+  Serial.println("[CLIENT] Executing unlock sequence...");
+  
+  // Step 1: Release lock
+  Serial.println("[CLIENT] Step 1: Releasing lock");
+  lockMotor.enable(true);
+  lockMotor.setDirection(false); // CCW to release
+  lockMotor.step(CLIENT_LOCK_RELEASE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
+  lockMotor.enable(false);
+  lockEngaged = false;
+  delay(500);
+  
+  // Step 2: Turn on relay (solenoid/LED)
+  Serial.println("[CLIENT] Step 2: Activating solenoid");
+  relayBoard.set(1, true);
+  delay(500);
+  
+  // Step 3: Open door
+  Serial.println("[CLIENT] Step 3: Opening door");
+  doorMotor.enable(true);
+  doorMotor.setDirection(true); // CW to open
+  doorMotor.step(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
+  doorMotor.enable(false);
+  doorIsOpen = true;
+  
+  currentState = CLIENT_OPEN;
+  Serial.println("[CLIENT] Cabinet opened successfully!");
+  
+  // Send status update
+  sendStatusUpdate();
 }
 
 // ===========================================
@@ -255,7 +287,6 @@ void updateComponents() {
   doorMotor.update();
   lockMotor.update();
   limitSwitch.update();
-  wsClient.loop();
   
   // Check motor completion status
   checkMotorCompletion();
@@ -458,15 +489,8 @@ void stopAllMotors() {
   doorMotorRunning = false;
   lockMotorRunning = false;
   
-  // Send emergency stop notification
-  if (wsClient.isConnected()) {
-    DynamicJsonDocument doc(200);
-    doc["type"] = "emergency_stop";
-    doc["timestamp"] = millis();
-    String message;
-    serializeJson(doc, message);
-    wsClient.sendMessage(message);
-  }
+  // Send emergency stop notification via ESP-NOW
+  espNowClient.sendStatus("emergency_stop");
 }
 
 // ===========================================
@@ -502,24 +526,8 @@ void handleEmergencyConditions() {
 // ===========================================
 
 void maintainConnections() {
-  // Check WiFi connection
-  if (millis() - lastWifiCheck > 30000) { // Check every 30 seconds
-    if (WiFi.status() != WL_CONNECTED) {
-      Serial.println("[CLIENT] WiFi disconnected, attempting reconnection...");
-      WiFi.reconnect();
-    }
-    lastWifiCheck = millis();
-  }
-  
-  // Check WebSocket connection
-  if (!wsClient.isConnected() && WiFi.status() == WL_CONNECTED) {
-    static unsigned long lastWSRetry = 0;
-    if (millis() - lastWSRetry > CLIENT_WEBSOCKET_RETRY) {
-      Serial.println("[CLIENT] Attempting WebSocket reconnection...");
-      wsClient.begin(CLIENT_WEBSOCKET_HOST, CLIENT_WEBSOCKET_PORT, CLIENT_WEBSOCKET_PATH);
-      lastWSRetry = millis();
-    }
-  }
+  // ESP-NOW doesn't require connection maintenance
+  // This function can be kept for future use or removed
 }
 
 void sendPeriodicUpdates() {
@@ -530,18 +538,16 @@ void sendPeriodicUpdates() {
 }
 
 void sendStatusUpdate() {
-  if (!wsClient.isConnected()) return;
+  // Send status update via ESP-NOW
+  char statusStr[50];
+  sprintf(statusStr, "%s|door:%d|lock:%d", 
+          stateToString(currentState),
+          doorIsOpen ? 1 : 0,
+          lockEngaged ? 1 : 0);
+  espNowClient.sendStatus(statusStr);
   
-  DynamicJsonDocument doc(500);
-  doc["type"] = "client_status";
-  doc["timestamp"] = millis();
-  doc["state"] = stateToString(currentState);
-  doc["door_open"] = doorIsOpen;
-  doc["lock_engaged"] = lockEngaged;
-  doc["motion_detected"] = motionDetected;
-  doc["reed_switch"] = reedSwitch.isClosed();
-  doc["limit_switch"] = limitSwitch.isPressed();
-  doc["door_motor_running"] = doorMotorRunning;
+  // Also send door state
+  espNowClient.sendDoorState(doorIsOpen);
   doc["lock_motor_running"] = lockMotorRunning;
   doc["emergency_stop"] = emergencyStop;
   doc["wifi_rssi"] = WiFi.RSSI();

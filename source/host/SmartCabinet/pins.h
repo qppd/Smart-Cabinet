@@ -29,12 +29,6 @@ static const uint8_t DS1302_CE_PIN = 0;   // RST/CE pin
 static const uint8_t DS1302_SCK_PIN = 19; // CLK/SCK pin  
 static const uint8_t DS1302_IO_PIN = 18;   // DAT/IO pin
 
-// Network Configuration
-// WiFi credentials for WebSocket server
-static const char* HOST_WIFI_SSID = "QPPD";
-static const char* HOST_WIFI_PASSWORD = "Programmer136";
-static const uint16_t HOST_WEBSOCKET_PORT = 81;
-
 // System Constants
 static const unsigned long HOST_DISPLAY_UPDATE_INTERVAL = 1000;    // LCD update frequency
 static const unsigned long HOST_FINGERPRINT_CHECK_INTERVAL = 500;  // Fingerprint scan frequency
