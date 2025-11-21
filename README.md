@@ -18,6 +18,13 @@
 
 ## Recent Changes (v2.0)
 
+### November 2025 Update
+- **Motor Direction Inversion**: Corrected cabinet operation - fingerprint authentication now opens door (CCW), test_motor_limit closes door (CW)
+- **Enhanced Testing Suite**: Added comprehensive door testing commands with proper stop conditions
+- **test_close_door**: New command to close door until limit switch is pressed (CW direction)
+- **test_open_door**: New command to open door for exact CLIENT_DOOR_OPEN_STEPS (CCW direction)
+- **Updated State Machine**: Fixed executeUnlock(), handleOpeningState(), and handleClosingState() for correct motor directions
+
 ### October 2025 Update
 - ESP-NOW Communication - Replaced WebSocket with ESP-NOW for reliable host-client communication
 - Fingerprint Enrollment System - One-button enrollment via tactile button on GPIO 23
@@ -1006,9 +1013,29 @@ typedef struct {
 }
 ```
 
----
+### Serial Command Testing Suite
 
-## Testing & Validation
+The client controller includes a comprehensive serial command testing interface for validation and diagnostics. Connect via Serial Monitor at 115200 baud and use these commands:
+
+**Available Test Commands:**
+```bash
+help                    # Show all available commands
+test_relay              # Test relay 1 (solenoid) - ON/OFF sequence
+test_motor1             # Test door motor - 2s CW, 2s CCW rotation
+test_motor2             # Test lock motor - 2s CW, 2s CCW rotation
+test_limit              # Test limit switches - press 3x to pass
+test_motor_limit        # Motor runs until limit switch pressed (CW closing)
+test_close_door         # Close door until limit switch is pressed (CW direction)
+test_open_door          # Open door for CLIENT_DOOR_OPEN_STEPS (CCW direction)
+test_motion             # Test PIR motion sensor - trigger to pass
+test_reed               # Test reed switch - trigger to pass
+```
+
+**Test Command Details:**
+- **`test_close_door`**: Runs door motor in CW direction until limit switch triggers, then stops
+- **`test_open_door`**: Runs door motor in CCW direction for exactly 2000 steps (CLIENT_DOOR_OPEN_STEPS)
+- **`test_motor_limit`**: Legacy command - runs motor until limit switch (CW closing direction)
+- All motor tests include 30-second safety timeouts and detailed progress reporting
 
 ### Pre-Deployment Testing
 
