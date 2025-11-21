@@ -265,7 +265,7 @@ void executeUnlock() {
   // Step 3: Open door
   Serial.println("[CLIENT] Step 3: Opening door");
   doorMotor.enable(true);
-  doorMotor.setDirection(true); // CW to open
+  doorMotor.setDirection(false); // CCW to open
   doorMotor.stepMany(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
   doorMotor.enable(false);
   doorIsOpen = true;
@@ -381,7 +381,7 @@ void handleOpeningState() {
     
     // Start door motor
     doorMotor.enable(true);
-    doorMotor.setDirection(true); // Direction for opening
+    doorMotor.setDirection(false); // Direction for opening
     doorMotor.startSteps(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
     doorMotorRunning = true;
     motorStartTime = millis();
@@ -419,7 +419,7 @@ void handleClosingState() {
     
     // Start door motor in closing direction
     doorMotor.enable(true);
-    doorMotor.setDirection(false); // Direction for closing
+    doorMotor.setDirection(true); // Direction for closing
     doorMotor.startSteps(CLIENT_DOOR_CLOSE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
     doorMotorRunning = true;
     motorStartTime = millis();
@@ -624,6 +624,10 @@ void handleSerialCommands() {
       testLimitSwitch();
     } else if (command == "test_motor_limit") {
       testMotorWithLimitSwitch();
+    } else if (command == "test_close_door") {
+      testCloseDoor();
+    } else if (command == "test_open_door") {
+      testOpenDoor();
     } else if (command == "test_motion") {
       testMotionSensor();
     } else if (command == "test_reed") {
@@ -648,6 +652,8 @@ void printTestHelp() {
   Serial.println("  test_motor2      - Test Motor 2 (Lock Motor) - 2s CW, 2s CCW");
   Serial.println("  test_limit       - Test limit switch (Pin 5) - press 3x to pass");
   Serial.println("  test_motor_limit - Motor 1 runs until limit switch pressed");
+  Serial.println("  test_close_door  - Close door until limit switch is pressed");
+  Serial.println("  test_open_door   - Open door for set steps (CLIENT_DOOR_OPEN_STEPS)");
   Serial.println("  test_motion      - Test motion sensor (trigger to pass)");
   Serial.println("  test_reed        - Test reed switch (trigger to pass)");
   Serial.println("  help             - Show this help message");
@@ -967,7 +973,7 @@ void testMotorWithLimitSwitch() {
   Serial.println("└────────────────────────────────────────┘");
   Serial.println();
   Serial.println("[TEST] This test runs Motor 1 until limit switch is pressed");
-  Serial.println("[TEST] Motor will run in CW direction");
+  Serial.println("[TEST] Motor will run in CW direction for closing");
   Serial.println("[TEST] Press the limit switch to stop the motor");
   Serial.println();
   
@@ -985,7 +991,7 @@ void testMotorWithLimitSwitch() {
   
   // Enable motor
   doorMotor.enable(true);
-  doorMotor.setDirection(true); // CW direction
+  doorMotor.setDirection(true); // CW direction for closing
   
   bool limitPressed = false;
   unsigned long stepCount = 0;
@@ -1045,5 +1051,165 @@ void testMotorWithLimitSwitch() {
     Serial.println("│  (Limit switch was not pressed)       │");
     Serial.println("└────────────────────────────────────────┘");
   }
+  Serial.println();
+}
+
+void testCloseDoor() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│      CLOSE DOOR TEST STARTED           │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  Serial.println("[TEST] This test closes the door until limit switch is pressed");
+  Serial.println("[TEST] Motor will run in CW direction (closing)");
+  Serial.println("[TEST] The limit switch will stop the motor");
+  Serial.println();
+  
+  // Wait for user to be ready
+  Serial.println("[TEST] Starting in 3 seconds...");
+  delay(1000);
+  Serial.println("[TEST] 2...");
+  delay(1000);
+  Serial.println("[TEST] 1...");
+  delay(1000);
+  Serial.println();
+  
+  Serial.println("[TEST] ✓ CLOSING DOOR - Limit switch will stop motor!");
+  Serial.println();
+  
+  // Enable motor
+  doorMotor.enable(true);
+  doorMotor.setDirection(true); // CW direction for closing
+  
+  bool limitPressed = false;
+  unsigned long stepCount = 0;
+  unsigned long startTime = millis();
+  unsigned long maxRunTime = 30000; // 30 second safety timeout
+  
+  // Run motor until limit switch is pressed or timeout
+  while (!limitPressed && (millis() - startTime < maxRunTime)) {
+    // Update limit switch state
+    limitSwitch.update();
+    
+    // Check if limit switch is pressed
+    if (limitSwitch.isPressed()) {
+      limitPressed = true;
+      Serial.println();
+      Serial.println("[TEST] ✓✓✓ LIMIT SWITCH PRESSED - DOOR CLOSED! ✓✓✓");
+      Serial.println("[TEST] Motor stopping...");
+      break;
+    }
+    
+    // Step the motor
+    doorMotor.stepOnce(CLIENT_MOTOR_PULSE_US);
+    delayMicroseconds(CLIENT_MOTOR_GAP_US);
+    stepCount++;
+    
+    // Print status every 1000 steps
+    if (stepCount % 1000 == 0) {
+      Serial.print("[TEST] Closing door... Steps: ");
+      Serial.print(stepCount);
+      Serial.print(" | Time: ");
+      Serial.print((millis() - startTime) / 1000);
+      Serial.println("s");
+    }
+  }
+  
+  // Disable motor
+  doorMotor.enable(false);
+  
+  unsigned long totalTime = millis() - startTime;
+  
+  Serial.println();
+  Serial.println("[TEST] Motor stopped");
+  Serial.print("[TEST] Total steps: ");
+  Serial.println(stepCount);
+  Serial.print("[TEST] Total time: ");
+  Serial.print(totalTime / 1000.0, 2);
+  Serial.println(" seconds");
+  Serial.println();
+  
+  if (limitPressed) {
+    Serial.println("┌────────────────────────────────────────┐");
+    Serial.println("│ CLOSE DOOR TEST COMPLETED - SUCCESS ✓ │");
+    Serial.println("└────────────────────────────────────────┘");
+  } else {
+    Serial.println("┌────────────────────────────────────────┐");
+    Serial.println("│  CLOSE DOOR TEST FAILED - TIMEOUT     │");
+    Serial.println("│  (Limit switch was not pressed)       │");
+    Serial.println("└────────────────────────────────────────┘");
+  }
+  Serial.println();
+}
+
+void testOpenDoor() {
+  Serial.println();
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│       OPEN DOOR TEST STARTED           │");
+  Serial.println("└────────────────────────────────────────┘");
+  Serial.println();
+  Serial.println("[TEST] This test opens the door for a set number of steps");
+  Serial.println("[TEST] Motor will run in CCW direction (opening)");
+  Serial.print("[TEST] Steps to execute: ");
+  Serial.println(CLIENT_DOOR_OPEN_STEPS);
+  Serial.println();
+  
+  // Wait for user to be ready
+  Serial.println("[TEST] Starting in 3 seconds...");
+  delay(1000);
+  Serial.println("[TEST] 2...");
+  delay(1000);
+  Serial.println("[TEST] 1...");
+  delay(1000);
+  Serial.println();
+  
+  Serial.println("[TEST] ✓ OPENING DOOR - Will run for set steps!");
+  Serial.println();
+  
+  // Enable motor
+  doorMotor.enable(true);
+  doorMotor.setDirection(false); // CCW direction for opening
+  
+  unsigned long stepCount = 0;
+  unsigned long startTime = millis();
+  unsigned long targetSteps = CLIENT_DOOR_OPEN_STEPS;
+  
+  // Run motor for the exact number of steps
+  while (stepCount < targetSteps) {
+    // Step the motor
+    doorMotor.stepOnce(CLIENT_MOTOR_PULSE_US);
+    delayMicroseconds(CLIENT_MOTOR_GAP_US);
+    stepCount++;
+    
+    // Print status every 500 steps
+    if (stepCount % 500 == 0) {
+      Serial.print("[TEST] Opening door... Steps: ");
+      Serial.print(stepCount);
+      Serial.print("/");
+      Serial.print(targetSteps);
+      Serial.print(" (");
+      Serial.print((stepCount * 100) / targetSteps);
+      Serial.println("%)");
+    }
+  }
+  
+  // Disable motor
+  doorMotor.enable(false);
+  
+  unsigned long totalTime = millis() - startTime;
+  
+  Serial.println();
+  Serial.println("[TEST] ✓✓✓ DOOR OPENED - TARGET STEPS REACHED! ✓✓✓");
+  Serial.println("[TEST] Motor stopped");
+  Serial.print("[TEST] Total steps: ");
+  Serial.println(stepCount);
+  Serial.print("[TEST] Total time: ");
+  Serial.print(totalTime / 1000.0, 2);
+  Serial.println(" seconds");
+  Serial.println();
+  
+  Serial.println("┌────────────────────────────────────────┐");
+  Serial.println("│  OPEN DOOR TEST COMPLETED - SUCCESS ✓ │");
+  Serial.println("└────────────────────────────────────────┘");
   Serial.println();
 }
