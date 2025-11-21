@@ -252,7 +252,7 @@ void executeUnlock() {
   Serial.println("[CLIENT] Step 1: Releasing lock");
   lockMotor.enable(true);
   lockMotor.setDirection(false); // CCW to release
-  lockMotor.step(CLIENT_LOCK_RELEASE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
+  lockMotor.stepMany(CLIENT_LOCK_RELEASE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
   lockMotor.enable(false);
   lockEngaged = false;
   delay(500);
@@ -266,7 +266,7 @@ void executeUnlock() {
   Serial.println("[CLIENT] Step 3: Opening door");
   doorMotor.enable(true);
   doorMotor.setDirection(true); // CW to open
-  doorMotor.step(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
+  doorMotor.stepMany(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
   doorMotor.enable(false);
   doorIsOpen = true;
   
@@ -548,13 +548,6 @@ void sendStatusUpdate() {
   
   // Also send door state
   espNowClient.sendDoorState(doorIsOpen);
-  doc["lock_motor_running"] = lockMotorRunning;
-  doc["emergency_stop"] = emergencyStop;
-  doc["wifi_rssi"] = WiFi.RSSI();
-  
-  String message;
-  serializeJson(doc, message);
-  wsClient.sendMessage(message);
 }
 
 // ===========================================
