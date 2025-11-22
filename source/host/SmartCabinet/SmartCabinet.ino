@@ -174,13 +174,38 @@ void checkFingerprint() {
   // result == -1: No finger detected or sensor error (silent, no action needed)
 }
 
+// Helper function to get next available fingerprint ID
+uint16_t getNextAvailableID() {
+  int templateCount = finger.getTemplateCount();
+  Serial.print("[HOST] Total fingerprints in database: ");
+  Serial.println(templateCount);
+  
+  // If database is full, return 0
+  if (templateCount >= MAX_ENROLLED_FINGERPRINTS) {
+    return 0;
+  }
+  
+  // Scan from ID 1 to MAX_ENROLLED_FINGERPRINTS to find first empty slot
+  for (uint16_t id = 1; id <= MAX_ENROLLED_FINGERPRINTS; id++) {
+    // Check if this ID exists in the database
+    if (finger.loadModel(id) != FINGERPRINT_OK) {
+      // This slot is empty, use it!
+      Serial.print("[HOST] Found empty slot at ID: ");
+      Serial.println(id);
+      return id;
+    }
+  }
+  
+  // No empty slots found
+  return 0;
+}
+
 void enrollFingerprint() {
   // Get the next available ID
-  int templateCount = finger.getTemplateCount();
-  uint16_t enrollID = templateCount + 1;
+  uint16_t enrollID = getNextAvailableID();
   
   // Check if we've reached max capacity
-  if (enrollID > MAX_ENROLLED_FINGERPRINTS) {
+  if (enrollID == 0) {
     Serial.println("[HOST] Maximum fingerprint capacity reached!");
     lcd.print(0, 3, "DB Full!          ");
     

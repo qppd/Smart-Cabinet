@@ -19,6 +19,8 @@ public:
   bool deleteFingerprint(uint16_t id);
   // Empty the entire fingerprint database, returns true on success
   bool emptyDatabase();
+  // Load a model by ID to check if it exists, returns status code
+  uint8_t loadModel(uint16_t id);
   // Search for fingerprint, returns -1 on error, 0 if not found, or matching ID
   int search();
   

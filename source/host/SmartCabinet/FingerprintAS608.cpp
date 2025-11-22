@@ -211,6 +211,13 @@ bool FingerprintAS608::emptyDatabase() {
   }
 }
 
+uint8_t FingerprintAS608::loadModel(uint16_t id) {
+  // Try to load the model from flash to buffer
+  // Returns FINGERPRINT_OK if the model exists at this ID
+  // Returns error code if model doesn't exist or other error
+  return _finger.loadModel(id);
+}
+
 int FingerprintAS608::search() {
   int p = _finger.getImage();
   if (p != FINGERPRINT_OK) return -1;
