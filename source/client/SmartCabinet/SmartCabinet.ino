@@ -107,14 +107,6 @@ void onMotionDetected(bool motion) {
   }
 }
 
-void onLimitSwitchTriggered(bool pressed) {
-  if (pressed) {
-    Serial.println("[CLIENT] EMERGENCY: Limit switch triggered!");
-    emergencyStop = true;
-    stopAllMotors();
-  }
-}
-
 // ===========================================
 // INITIALIZATION
 // ===========================================
@@ -208,7 +200,6 @@ void initializeHardware() {
   
   // Initialize switches
   limitSwitch.begin();
-  limitSwitch.setCallback(onLimitSwitchTriggered);
   reedSwitch.begin();
   Serial.println("[CLIENT] Safety switches initialized");
   
@@ -524,15 +515,7 @@ void handleEmergencyConditions() {
     return;
   }
   
-  // Check limit switches during motor operations
-  if (doorMotorRunning || lockMotorRunning) {
-    if (limitSwitch.isPressed()) {
-      emergencyStop = true;
-      return;
-    }
-  }
-  
-  // Check motor timeouts
+  // Check motor timeouts (only relevant for non-blocking operations)
   if ((doorMotorRunning || lockMotorRunning) && 
       (millis() - motorStartTime > CLIENT_MOTOR_TIMEOUT)) {
     Serial.println("[CLIENT] Motor operation timeout!");
