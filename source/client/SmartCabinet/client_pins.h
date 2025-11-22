@@ -52,8 +52,8 @@ static const unsigned long CLIENT_STATUS_UPDATE_INTERVAL = 1000; // Send status 
 // NEMA23 Stepper Motor: 3.0A, 1.8°/step (200 steps/revolution)
 // 1 full rotation = 200 steps
 // With 1/8 microstepping on TB6600 = 1600 steps/revolution
-static const unsigned long CLIENT_DOOR_OPEN_STEPS = 2000;      // Steps to fully open door
-static const unsigned long CLIENT_DOOR_CLOSE_STEPS = 2000;     // Steps to fully close door
+static const unsigned long CLIENT_DOOR_OPEN_STEPS = 52000;     // Steps to fully open door (adjust based on your cabinet)
+static const unsigned long CLIENT_DOOR_CLOSE_STEPS = 60000;    // Max steps for closing (will stop at limit switch)
 static const unsigned long CLIENT_LOCK_ENGAGE_STEPS = 400;     // Steps to engage lock
 static const unsigned long CLIENT_LOCK_RELEASE_STEPS = 400;    // Steps to release lock
 

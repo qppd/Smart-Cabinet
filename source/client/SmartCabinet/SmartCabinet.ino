@@ -365,41 +365,62 @@ void handleOpeningState() {
   if (!doorMotorRunning) {
     // Start door opening sequence
     Serial.println("[CLIENT] Starting door opening sequence...");
+    Serial.print("[CLIENT] Will open door for ");
+    Serial.print(CLIENT_DOOR_OPEN_STEPS);
+    Serial.println(" steps");
     
     // Release solenoid lock first
     relayBoard.set(1, true); // Energize solenoid to release lock
     delay(500); // Give solenoid time to actuate
     
-    // Disengage mechanical lock
+    // Disengage mechanical lock (blocking)
     if (lockEngaged) {
+      Serial.println("[CLIENT] Releasing lock...");
       lockMotor.enable(true);
       lockMotor.setDirection(false); // Direction for unlocking
-      lockMotor.startSteps(CLIENT_LOCK_RELEASE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
-      lockMotorRunning = true;
+      lockMotor.stepMany(CLIENT_LOCK_RELEASE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
+      lockMotor.enable(false);
       lockEngaged = false;
+      Serial.println("[CLIENT] Lock released");
     }
     
-    // Start door motor
+    // Open door (blocking with watchdog feeding)
+    Serial.println("[CLIENT] Opening door...");
     doorMotor.enable(true);
     doorMotor.setDirection(false); // Direction for opening
-    doorMotor.startSteps(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
-    doorMotorRunning = true;
-    motorStartTime = millis();
+    
+    // Use manual stepping with watchdog feeding for long movements
+    unsigned long stepCount = 0;
+    unsigned long targetSteps = CLIENT_DOOR_OPEN_STEPS;
+    
+    while (stepCount < targetSteps) {
+      doorMotor.stepOnce(CLIENT_MOTOR_PULSE_US);
+      delayMicroseconds(CLIENT_MOTOR_GAP_US);
+      stepCount++;
+      
+      // Feed watchdog and print progress every 2000 steps
+      if (stepCount % 2000 == 0) {
+        yield(); // Feed the watchdog
+        Serial.print("[CLIENT] Opening... ");
+        Serial.print(stepCount);
+        Serial.print("/");
+        Serial.print(targetSteps);
+        Serial.print(" (");
+        Serial.print((stepCount * 100) / targetSteps);
+        Serial.println("%)");
+      }
+    }
+    
+    doorMotor.enable(false);
+    doorIsOpen = true;
+    Serial.println("[CLIENT] Door fully opened!");
     
     // Turn on LED strip
     relayBoard.set(2, true);
-  }
-  
-  // Check if door is fully open
-  if (!doorMotorRunning && reedSwitch.isClosed() == false) {
+    
+    // Move to open state
     currentState = CLIENT_OPEN;
     lastMotionTime = millis(); // Reset motion timer
-  }
-  
-  // Check for timeout
-  if (millis() - motorStartTime > CLIENT_MOTOR_TIMEOUT) {
-    Serial.println("[CLIENT] ERROR: Door opening timeout!");
-    currentState = CLIENT_ERROR;
   }
 }
 
@@ -416,38 +437,75 @@ void handleOpenState() {
 void handleClosingState() {
   if (!doorMotorRunning) {
     Serial.println("[CLIENT] Starting door closing sequence...");
-    
-    // Start door motor in closing direction
-    doorMotor.enable(true);
-    doorMotor.setDirection(true); // Direction for closing
-    doorMotor.startSteps(CLIENT_DOOR_CLOSE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
-    doorMotorRunning = true;
-    motorStartTime = millis();
+    Serial.println("[CLIENT] Will close until limit switch is pressed");
     
     // Turn off LED strip
     relayBoard.set(2, false);
-  }
-  
-  // Check if door is fully closed
-  if (!doorMotorRunning && reedSwitch.isClosed()) {
-    // Engage mechanical lock
+    
+    // Close door until limit switch is triggered (blocking with watchdog feeding)
+    Serial.println("[CLIENT] Closing door...");
+    doorMotor.enable(true);
+    doorMotor.setDirection(true); // Direction for closing
+    
+    unsigned long stepCount = 0;
+    unsigned long startTime = millis();
+    unsigned long maxTime = 60000; // 60 second timeout
+    bool limitPressed = false;
+    
+    while (!limitPressed && (millis() - startTime < maxTime)) {
+      // Check limit switch
+      limitSwitch.update();
+      if (limitSwitch.isPressed()) {
+        limitPressed = true;
+        Serial.println("[CLIENT] Limit switch pressed!");
+        break;
+      }
+      
+      // Step the motor
+      doorMotor.stepOnce(CLIENT_MOTOR_PULSE_US);
+      delayMicroseconds(CLIENT_MOTOR_GAP_US);
+      stepCount++;
+      
+      // Feed watchdog and print status every 2000 steps
+      if (stepCount % 2000 == 0) {
+        yield(); // Feed the watchdog
+        Serial.print("[CLIENT] Closing... Steps: ");
+        Serial.print(stepCount);
+        Serial.print(" | Time: ");
+        Serial.print((millis() - startTime) / 1000);
+        Serial.println("s");
+      }
+    }
+    
+    doorMotor.enable(false);
+    doorIsOpen = false;
+    
+    Serial.print("[CLIENT] Door closed after ");
+    Serial.print(stepCount);
+    Serial.println(" steps");
+    
+    if (!limitPressed) {
+      Serial.println("[CLIENT] WARNING: Limit switch not pressed (timeout)");
+    }
+    
+    // Small delay before engaging lock
+    delay(500);
+    
+    // Engage mechanical lock (blocking)
+    Serial.println("[CLIENT] Engaging lock...");
     lockMotor.enable(true);
     lockMotor.setDirection(true); // Direction for locking  
-    lockMotor.startSteps(CLIENT_LOCK_ENGAGE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
-    lockMotorRunning = true;
+    lockMotor.stepMany(CLIENT_LOCK_ENGAGE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
+    lockMotor.enable(false);
     lockEngaged = true;
+    Serial.println("[CLIENT] Lock engaged");
     
     // Engage solenoid lock
     relayBoard.set(1, false); // De-energize solenoid to engage lock
     
+    // Move to locked state
     currentState = CLIENT_LOCKED;
-    doorIsOpen = false;
-  }
-  
-  // Check for timeout
-  if (millis() - motorStartTime > CLIENT_MOTOR_TIMEOUT) {
-    Serial.println("[CLIENT] ERROR: Door closing timeout!");
-    currentState = CLIENT_ERROR;
+    Serial.println("[CLIENT] Cabinet fully locked!");
   }
 }
 
@@ -1105,8 +1163,9 @@ void testCloseDoor() {
     delayMicroseconds(CLIENT_MOTOR_GAP_US);
     stepCount++;
     
-    // Print status every 1000 steps
-    if (stepCount % 1000 == 0) {
+    // Print status every 2000 steps and feed watchdog
+    if (stepCount % 2000 == 0) {
+      yield(); // Feed watchdog timer
       Serial.print("[TEST] Closing door... Steps: ");
       Serial.print(stepCount);
       Serial.print(" | Time: ");
@@ -1181,8 +1240,9 @@ void testOpenDoor() {
     delayMicroseconds(CLIENT_MOTOR_GAP_US);
     stepCount++;
     
-    // Print status every 500 steps
-    if (stepCount % 500 == 0) {
+    // Print status every 2000 steps and feed watchdog
+    if (stepCount % 2000 == 0) {
+      yield(); // Feed watchdog timer
       Serial.print("[TEST] Opening door... Steps: ");
       Serial.print(stepCount);
       Serial.print("/");
