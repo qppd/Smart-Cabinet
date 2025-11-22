@@ -228,7 +228,7 @@ void onESPNowMessage(const char* command, int userId, bool success, const char* 
   if (strcmp(command, "unlock") == 0 && success) {
     // Received unlock command from host
     Serial.println("[CLIENT] Unlock command received, opening cabinet...");
-    executeUnlock();
+    unlockAndOpen(); // Use state machine instead of blocking executeUnlock()
   } else if (strcmp(command, "authResult") == 0) {
     // Received authentication result
     if (success) {
@@ -237,44 +237,6 @@ void onESPNowMessage(const char* command, int userId, bool success, const char* 
       Serial.println("[CLIENT] Authentication failed");
     }
   }
-}
-
-// Execute unlock sequence
-void executeUnlock() {
-  if (emergencyStop) {
-    Serial.println("[CLIENT] Cannot unlock - Emergency stop active");
-    return;
-  }
-  
-  Serial.println("[CLIENT] Executing unlock sequence...");
-  
-  // Step 1: Release lock
-  Serial.println("[CLIENT] Step 1: Releasing lock");
-  lockMotor.enable(true);
-  lockMotor.setDirection(false); // CCW to release
-  lockMotor.stepMany(CLIENT_LOCK_RELEASE_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
-  lockMotor.enable(false);
-  lockEngaged = false;
-  delay(500);
-  
-  // Step 2: Turn on relay (solenoid/LED)
-  Serial.println("[CLIENT] Step 2: Activating solenoid");
-  relayBoard.set(1, true);
-  delay(500);
-  
-  // Step 3: Open door
-  Serial.println("[CLIENT] Step 3: Opening door");
-  doorMotor.enable(true);
-  doorMotor.setDirection(false); // CCW to open
-  doorMotor.stepMany(CLIENT_DOOR_OPEN_STEPS, CLIENT_MOTOR_PULSE_US, CLIENT_MOTOR_GAP_US);
-  doorMotor.enable(false);
-  doorIsOpen = true;
-  
-  currentState = CLIENT_OPEN;
-  Serial.println("[CLIENT] Cabinet opened successfully!");
-  
-  // Send status update
-  sendStatusUpdate();
 }
 
 // ===========================================
