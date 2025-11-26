@@ -235,6 +235,41 @@ Custom-designed 3D printable components for professional installation and sensor
 
 ---
 
+### 3D Model Visualizations
+
+Complete assembly views of the Smart Cabinet mechanical system showcasing all custom-designed components.
+
+<div align="center">
+
+#### Full Assembly View (Wireframe)
+![Smart Cabinet Full View](model/SmartCabinetFullView.png)
+*Complete mechanical assembly showing internal component placement and motor mounting systems*
+
+#### Full Assembly View (Rendered)
+![Smart Cabinet Rendered View](model/SmartCabinetFullViewRendered.png)
+*Photorealistic render of the assembled Smart Cabinet with all mounting brackets and hardware*
+
+</div>
+
+**Assembly Components Include:**
+- Stepper motor mounting brackets with integrated bearing supports
+- Door puller mechanism with linear actuator mount
+- Limit switch mounting system with protective covers
+- Motion sensor bracket for optimal detection coverage
+- Fingerprint scanner enclosure with mounting plate
+- Cable management channels and wire routing guides
+
+**Design Features:**
+- Modular component system for easy maintenance and upgrades
+- Integrated mounting points for all electronic components
+- Optimized clearances for smooth mechanical operation
+- Professional appearance with clean, modern aesthetics
+- All components designed for standard FDM 3D printing
+
+**Individual Component Views:** Detailed images of each mounting bracket and enclosure available in the [`model/`](https://github.com/qppd/Smart-Cabinet/tree/main/model) directory.
+
+---
+
 ### Component Procurement Guide
 
 #### **Microcontrollers & Development Boards**
