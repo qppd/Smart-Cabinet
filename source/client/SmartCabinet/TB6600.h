@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 
-// Simple TB6600 stepper driver helper for single motor control
-// Uses DIR and STEP pins and optional ENABLE pin.
+// TB6600 stepper driver helper for single motor control
 class TB6600 {
 public:
   TB6600(uint8_t dirPin, uint8_t stepPin, uint8_t enablePin = 255);
