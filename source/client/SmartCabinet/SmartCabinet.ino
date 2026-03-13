@@ -262,7 +262,7 @@ void checkMotorCompletion() {
     lockMotor.enable(false);
     Serial.println("[CLIENT] Lock motor operation completed");
     
-    // Update lock state (you may need additional sensors for this)
+    // Update lock state
   }
 }
 
@@ -473,7 +473,7 @@ void handleErrorState() {
   relayBoard.allOff();
   
   // LED flashing disabled to prevent relay clicking
-  // Uncomment below if you want visual error indication
+  // Uncomment to enable visual error indication
   /*
   static unsigned long lastFlash = 0;
   static bool ledState = false;
@@ -484,8 +484,6 @@ void handleErrorState() {
     lastFlash = millis();
   }
   */
-  
-  // System requires manual reset or host command to clear error
 }
 
 // ===========================================
@@ -515,7 +513,7 @@ void handleEmergencyConditions() {
     return;
   }
   
-  // Check motor timeouts (only relevant for non-blocking operations)
+  // Check motor timeouts
   if ((doorMotorRunning || lockMotorRunning) && 
       (millis() - motorStartTime > CLIENT_MOTOR_TIMEOUT)) {
     Serial.println("[CLIENT] Motor operation timeout!");
@@ -530,7 +528,6 @@ void handleEmergencyConditions() {
 
 void maintainConnections() {
   // ESP-NOW doesn't require connection maintenance
-  // This function can be kept for future use or removed
 }
 
 void sendPeriodicUpdates() {
@@ -684,11 +681,11 @@ void testRelay() {
   relayBoard.set(1, false);
   delay(500);
   
-  Serial.println("[TEST] Relay 1 test completed ✓");
+  Serial.println("[TEST] Relay 1 test completed ");
   Serial.println();
   
   Serial.println("┌────────────────────────────────────────┐");
-  Serial.println("│    RELAY TEST COMPLETED - SUCCESS ✓    │");
+  Serial.println("│    RELAY TEST COMPLETED - SUCCESS     │");
   Serial.println("└────────────────────────────────────────┘");
   Serial.println();
 }
@@ -722,7 +719,7 @@ void testMotor(int motorNum) {
     motor->stepOnce(CLIENT_MOTOR_PULSE_US);
     delayMicroseconds(CLIENT_MOTOR_GAP_US);
   }
-  Serial.println("[TEST] Clockwise rotation completed ✓");
+  Serial.println("[TEST] Clockwise rotation completed ");
   delay(500);
   
   // Test CCW direction
@@ -733,7 +730,7 @@ void testMotor(int motorNum) {
     motor->stepOnce(CLIENT_MOTOR_PULSE_US);
     delayMicroseconds(CLIENT_MOTOR_GAP_US);
   }
-  Serial.println("[TEST] Counter-Clockwise rotation completed ✓");
+  Serial.println("[TEST] Counter-Clockwise rotation completed ");
   
   // Disable motor
   motor->enable(false);
@@ -744,7 +741,7 @@ void testMotor(int motorNum) {
   Serial.println();
   Serial.print("│   MOTOR ");
   Serial.print(motorNum);
-  Serial.println(" TEST COMPLETED - SUCCESS ✓ │");
+  Serial.println(" TEST COMPLETED - SUCCESS  │");
   Serial.println("└────────────────────────────────────────┘");
   Serial.println();
 }
@@ -805,11 +802,11 @@ void testLimitSwitch() {
     lastState = currentState;
     delay(50);
   }
-  Serial.println("[TEST] Limit Switch test completed ✓");
+  Serial.println("[TEST] Limit Switch test completed ");
   Serial.println();
   
   Serial.println("┌────────────────────────────────────────┐");
-  Serial.println("│  LIMIT SWITCH TEST COMPLETED - SUCCESS ✓│");
+  Serial.println("│  LIMIT SWITCH TEST COMPLETED - SUCCESS │");
   Serial.println("└────────────────────────────────────────┘");
   Serial.println();
 }
@@ -850,7 +847,7 @@ void testMotionSensor() {
   }
   
   if (motionClear) {
-    Serial.println("[TEST] ✓ No motion detected - Baseline established");
+    Serial.println("[TEST]  No motion detected - Baseline established");
     Serial.println();
     Serial.println("[TEST] Now testing motion detection...");
     Serial.println("[TEST] Please move in front of the sensor!");
@@ -865,7 +862,7 @@ void testMotionSensor() {
       motionSensor.update();
       if (motionSensor.isMotion()) {
         motionDetected = true;
-        Serial.println("[TEST] ✓✓✓ MOTION DETECTED! ✓✓✓");
+        Serial.println("[TEST]  MOTION DETECTED! ");
         break;
       }
       
@@ -879,7 +876,7 @@ void testMotionSensor() {
     Serial.println();
     if (motionDetected) {
       Serial.println("┌────────────────────────────────────────┐");
-      Serial.println("│  MOTION SENSOR TEST COMPLETED - SUCCESS ✓│");
+      Serial.println("│  MOTION SENSOR TEST COMPLETED - SUCCESS │");
       Serial.println("└────────────────────────────────────────┘");
     } else {
       Serial.println("┌────────────────────────────────────────┐");
@@ -928,7 +925,7 @@ void testReedSwitch() {
     return;
   }
   
-  Serial.println("[TEST] ✓ Continuity detected - Magnet is far (baseline established)");
+  Serial.println("[TEST]  Continuity detected - Magnet is far (baseline established)");
   Serial.println();
   Serial.println("[TEST] Now testing reed switch trigger...");
   Serial.println("[TEST] Please bring magnet CLOSE to the sensor!");
@@ -944,7 +941,7 @@ void testReedSwitch() {
     // When magnet is close, continuity breaks, so isClosed() returns false
     if (!reedSwitch.isClosed()) {
       switchTriggered = true;
-      Serial.println("[TEST] ✓✓✓ REED SWITCH TRIGGERED! ✓✓✓");
+      Serial.println("[TEST]  REED SWITCH TRIGGERED! ");
       Serial.println("[TEST] Continuity broken - Magnet detected close!");
       break;
     }
@@ -959,7 +956,7 @@ void testReedSwitch() {
   Serial.println();
   if (switchTriggered) {
     Serial.println("┌────────────────────────────────────────┐");
-    Serial.println("│  REED SWITCH TEST COMPLETED - SUCCESS ✓ │");
+    Serial.println("│  REED SWITCH TEST COMPLETED - SUCCESS  │");
     Serial.println("└────────────────────────────────────────┘");
   } else {
     Serial.println("┌────────────────────────────────────────┐");
@@ -989,7 +986,7 @@ void testMotorWithLimitSwitch() {
   delay(1000);
   Serial.println();
   
-  Serial.println("[TEST] ✓ MOTOR STARTING - Press limit switch to stop!");
+  Serial.println("[TEST]  MOTOR STARTING - Press limit switch to stop!");
   Serial.println();
   
   // Enable motor
@@ -1010,7 +1007,7 @@ void testMotorWithLimitSwitch() {
     if (limitSwitch.isPressed()) {
       limitPressed = true;
       Serial.println();
-      Serial.println("[TEST] ✓✓✓ LIMIT SWITCH PRESSED! ✓✓✓");
+      Serial.println("[TEST]  LIMIT SWITCH PRESSED! ");
       Serial.println("[TEST] Motor stopping...");
       break;
     }
@@ -1046,7 +1043,7 @@ void testMotorWithLimitSwitch() {
   
   if (limitPressed) {
     Serial.println("┌────────────────────────────────────────┐");
-    Serial.println("│ MOTOR+LIMIT TEST COMPLETED - SUCCESS ✓│");
+    Serial.println("│ MOTOR+LIMIT TEST COMPLETED - SUCCESS │");
     Serial.println("└────────────────────────────────────────┘");
   } else {
     Serial.println("┌────────────────────────────────────────┐");
@@ -1077,7 +1074,7 @@ void testCloseDoor() {
   delay(1000);
   Serial.println();
   
-  Serial.println("[TEST] ✓ CLOSING DOOR - Limit switch will stop motor!");
+  Serial.println("[TEST]  CLOSING DOOR - Limit switch will stop motor!");
   Serial.println();
   
   // Enable motor
@@ -1098,7 +1095,7 @@ void testCloseDoor() {
     if (limitSwitch.isPressed()) {
       limitPressed = true;
       Serial.println();
-      Serial.println("[TEST] ✓✓✓ LIMIT SWITCH PRESSED - DOOR CLOSED! ✓✓✓");
+      Serial.println("[TEST]  LIMIT SWITCH PRESSED - DOOR CLOSED! ");
       Serial.println("[TEST] Motor stopping...");
       break;
     }
@@ -1135,7 +1132,7 @@ void testCloseDoor() {
   
   if (limitPressed) {
     Serial.println("┌────────────────────────────────────────┐");
-    Serial.println("│ CLOSE DOOR TEST COMPLETED - SUCCESS ✓ │");
+    Serial.println("│ CLOSE DOOR TEST COMPLETED - SUCCESS  │");
     Serial.println("└────────────────────────────────────────┘");
   } else {
     Serial.println("┌────────────────────────────────────────┐");
@@ -1167,7 +1164,7 @@ void testOpenDoor() {
   delay(1000);
   Serial.println();
   
-  Serial.println("[TEST] ✓ OPENING DOOR - Will run for set steps!");
+  Serial.println("[TEST]  OPENING DOOR - Will run for set steps!");
   Serial.println();
   
   // Enable motor
@@ -1204,7 +1201,7 @@ void testOpenDoor() {
   unsigned long totalTime = millis() - startTime;
   
   Serial.println();
-  Serial.println("[TEST] ✓✓✓ DOOR OPENED - TARGET STEPS REACHED! ✓✓✓");
+  Serial.println("[TEST]  DOOR OPENED - TARGET STEPS REACHED! ");
   Serial.println("[TEST] Motor stopped");
   Serial.print("[TEST] Total steps: ");
   Serial.println(stepCount);
@@ -1214,7 +1211,7 @@ void testOpenDoor() {
   Serial.println();
   
   Serial.println("┌────────────────────────────────────────┐");
-  Serial.println("│  OPEN DOOR TEST COMPLETED - SUCCESS ✓ │");
+  Serial.println("│  OPEN DOOR TEST COMPLETED - SUCCESS  │");
   Serial.println("└────────────────────────────────────────┘");
   Serial.println();
 }
