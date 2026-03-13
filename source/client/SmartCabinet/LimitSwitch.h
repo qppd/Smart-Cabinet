@@ -3,11 +3,6 @@
 
 #include <Arduino.h>
 
-// Simple debounced limit switch helper for ESP32
-// Usage:
-//  LimitSwitch sw(pin, activeLow=true, debounceMs=50);
-//  sw.begin(); sw.update(); if (sw.isPressed()) ...
-
 class LimitSwitch {
 public:
   LimitSwitch(uint8_t pin, bool activeLow = true, unsigned long debounceMs = 50);
@@ -28,4 +23,4 @@ private:
   Callback _cb;
 };
 
-#endif // COMPONENTS_LIMIT_SWITCH_H
+#endif // COMPONENT_LIMIT_SWITCH_H
