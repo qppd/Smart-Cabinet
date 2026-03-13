@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-// Simple 4-channel relay board helper (active HIGH by default)
+// 4-channel relay board helper (active HIGH by default)
 class Relay4 {
 public:
   Relay4(uint8_t r1, uint8_t r2, uint8_t r3, uint8_t r4, bool activeHigh = true);
@@ -18,4 +18,4 @@ private:
   bool _activeHigh;
 };
 
-#endif // COMPONENTS_RELAY4_H
+#endif // COMPONENT_RELAY4_H
