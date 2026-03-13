@@ -1,7 +1,5 @@
 #include "MotionSensor.h"
 
-// Definitions for MotionSensor declared in MotionSensor.h
-
 MotionSensor::MotionSensor(uint8_t pin, unsigned long debounceMs)
   : _pin(pin), _state(false), _lastChange(0), _debounceMs(debounceMs), _cb(nullptr) {}
 
