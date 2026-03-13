@@ -5,7 +5,6 @@
 #include <esp_now.h>
 #include <WiFi.h>
 
-// Data structure for ESP-NOW messages (must match host)
 typedef struct {
     char command[32];      // Command type: "unlock", "authResult", "status"
     int userId;            // User ID from fingerprint
@@ -13,7 +12,6 @@ typedef struct {
     char data[64];         // Additional data
 } ESPNowMessage;
 
-// Callback function type
 typedef void (*MessageCallback)(const char* command, int userId, bool success, const char* data);
 
 class ESPNowClient {
