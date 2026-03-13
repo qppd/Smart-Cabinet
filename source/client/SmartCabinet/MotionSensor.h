@@ -3,12 +3,6 @@
 
 #include <Arduino.h>
 
-// Simple 3-wire PIR / motion sensor helper for ESP32
-// Usage:
-//   MotionSensor pir(PIN);
-//   pir.begin();
-//   in loop(): pir.update(); if (pir.isMotion()) ...
-
 class MotionSensor {
 public:
   MotionSensor(uint8_t pin, unsigned long debounceMs = 200);
